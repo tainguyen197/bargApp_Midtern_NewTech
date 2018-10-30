@@ -1,5 +1,5 @@
 
-## REQUIRE 
+## REQUIRES
 - Xây dựng hệ thống đặt xe máy qua tổng đài điện thoại ở mức độ cơ bản, gồm nhiều phân hệ như mô tả bên dưới.
 
 
