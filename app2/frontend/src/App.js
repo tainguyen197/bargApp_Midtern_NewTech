@@ -12,6 +12,13 @@ class App extends Component {
     const { google } = mapProps;
     const service = new google.maps.places.PlacesService(map);
     console.log("onReady");
+    fetch('https://maps.googleapis.com/maps/api/geocode/json?address=khoa+hoc+tu+nhien&key=AIzaSyAoBGukMgWP82wOqAaDqkXeslb9V4jXH28')
+    .then(results =>{
+      return results.json();
+    }).then(data=>{
+      //lấy location(lag,lng)  dựa trên address
+      console.log(data.results[0].geometry.location);
+    })
   }
 
   mapClicked(mapProps, map, clickEvent) {
@@ -30,22 +37,6 @@ class App extends Component {
   }
 
   state = { userLocation: { lat: 32, lng: 32 }, loading: true };
-  // loadMap(props) {
-  //   if (navigator.geolocation) {
-  //     navigator.geolocation.getCurrentPosition(function (position) {
-  //       console.log(position);
-  //       // state.userLocation = {
-  //       //   lat: position.coords.latitude,
-  //       //   lng: position.coords.longitude
-  //       // };
-  //       // state.loading = false;
-  //       //console.log(coords);
-  //     })
-  //   }
-
-  // }
-
-  
   componentDidMount(props) {
     navigator.geolocation.getCurrentPosition(
       position => {
@@ -70,21 +61,9 @@ class App extends Component {
       return null;
     }
 
-    //return <Map google={google} initialCenter={userLocation} zoom={10} />;
-//     const style = {
-//       width: '100%',
-//       height: '100%'
-//     }
-
-//     var coords = { lat: 25.9841419, lng: 108.9059114 };
-//     this.loadMap(style, coords);
-//     //console.log(coords);
-
-
     return (
       <div className="App">
         <Map google={this.props.google}
-          //style={style}
           className={'map'}
           initialCenter={userLocation}
           zoom={15}
@@ -95,12 +74,6 @@ class App extends Component {
           <Marker onClick={this.onMarkerClick}
             name={'Current location'}
             onMouseover={this.onMouseoverMarker}
-          //   position={
-          //     {
-          //       lat: coords.lat,
-          //       lng: coords.lng
-          //     }
-          // }
           />
           {/* <InfoWindow
             infoWindow.setPosition(pos);
