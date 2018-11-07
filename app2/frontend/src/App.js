@@ -15,11 +15,12 @@ class App extends Component {
   }
 
   placeMarker(location,map) {
-    console.log(this.google);
+    console.log("added");
     var marker = new window.google.maps.Marker({
         position: location,
         map: map
     });
+    this.setState(marker);
 
 }
 
@@ -41,7 +42,6 @@ class App extends Component {
   loadNewLocation(ts, flag,map) {
     fetch('http://localhost:3000/categories/lp?ts=' + ts)
       .then(results => {
-        console.log(results.status);
         if (results.status === 200) {
           flag = 1;
           return results.json();
@@ -50,13 +50,13 @@ class App extends Component {
         console.log(err);
       }).then(data => {
         if (flag === 1) {
+          flag = 0;
           data.categories.forEach(element => {
             this.createMarkerforNewLocation(element.DiaChi,map);
           });
           ts = data.return_ts;
-          flag = 0;
         }
-        this.loadNewLocation(ts);
+        this.loadNewLocation(ts,flag,map);
       })
   }
 
@@ -66,12 +66,14 @@ class App extends Component {
     var ts = 0;
     var flag = 0;
     this.loadNewLocation(ts, flag,map);
-
-   
   }
 
   mapClicked(mapProps, map, clickEvent) {
-    console.log("Map Click")
+    console.log("Map Click");
+    var marker = new window.google.maps.Marker({
+      position:{lat: 10.748133, lng: 106.788456} ,
+      map: map
+  });
   }
 
   centerMoved(mapProps, map) {
@@ -134,8 +136,6 @@ class App extends Component {
             infoWindow.open(map);
             map.setCenter(pos);
           </InfoWindow> */}
-
-
         </Map>
       </div>
     );
