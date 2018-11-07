@@ -14,17 +14,17 @@ class App extends Component {
     this.placeMarker = this.placeMarker.bind(this);
   }
 
-  placeMarker(location) {
-    //console.log(this.props.google.maps);
+  placeMarker(location,map) {
+    console.log(this.google);
     var marker = new window.google.maps.Marker({
         position: location,
-        map: this.props.google.maps
+        map: map
     });
 
 }
 
 
-  createMarkerforNewLocation(address){
+  createMarkerforNewLocation(address,map){
     var template = 'https://maps.googleapis.com/maps/api/geocode/json?address=';
     var key = '&key=AIzaSyAoBGukMgWP82wOqAaDqkXeslb9V4jXH28'
     var req = template + address + key;
@@ -34,11 +34,11 @@ class App extends Component {
       }).then(data => {
         //lấy location(lag,lng)  dựa trên address
         var location = data.results[0].geometry.location;
-        this.placeMarker(location);
+        this.placeMarker(location,map);
       })
   }
 
-  loadNewLocation(ts, flag) {
+  loadNewLocation(ts, flag,map) {
     fetch('http://localhost:3000/categories/lp?ts=' + ts)
       .then(results => {
         console.log(results.status);
@@ -51,7 +51,7 @@ class App extends Component {
       }).then(data => {
         if (flag === 1) {
           data.categories.forEach(element => {
-            this.createMarkerforNewLocation(element.DiaChi);
+            this.createMarkerforNewLocation(element.DiaChi,map);
           });
           ts = data.return_ts;
           flag = 0;
@@ -65,7 +65,7 @@ class App extends Component {
     console.log("onReady");
     var ts = 0;
     var flag = 0;
-    this.loadNewLocation(ts, flag);
+    this.loadNewLocation(ts, flag,map);
 
    
   }
@@ -102,6 +102,9 @@ class App extends Component {
     );
   }
 
+  renderMarkers(map,maps){
+    console.log("render");
+  }
 
   render() {
     const { loading, userLocation } = this.state;
@@ -116,7 +119,8 @@ class App extends Component {
           className={'map'}
           initialCenter={userLocation}
           zoom={15}
-          onClick={this.mapClicked}
+          onGoogleApiLoaded={({map, maps}) => this.renderMarkers(map,maps)}
+          onClick ={this.mapClicked}
           onReady={this.fetchPlaces}
           onDragend={this.centerMoved}
         >
