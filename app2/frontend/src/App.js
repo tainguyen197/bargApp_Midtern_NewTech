@@ -10,46 +10,64 @@ class App extends Component {
     super(props);
     this.loadNewLocation = this.loadNewLocation.bind(this);
     this.fetchPlaces = this.fetchPlaces.bind(this);
-
+    this.createMarkerforNewLocation = this.createMarkerforNewLocation.bind(this);
+    this.placeMarker = this.placeMarker.bind(this);
   }
 
-  loadNewLocation(ts, ts_temp) {
+  placeMarker(location) {
+    //console.log(this.props.google.maps);
+    var marker = new window.google.maps.Marker({
+        position: location,
+        map: this.props.google.maps
+    });
+
+}
+
+
+  createMarkerforNewLocation(address){
+    var template = 'https://maps.googleapis.com/maps/api/geocode/json?address=';
+    var key = '&key=AIzaSyAoBGukMgWP82wOqAaDqkXeslb9V4jXH28'
+    var req = template + address + key;
+     fetch(req)
+      .then(results => {
+        return results.json();
+      }).then(data => {
+        //lấy location(lag,lng)  dựa trên address
+        var location = data.results[0].geometry.location;
+        this.placeMarker(location);
+      })
+  }
+
+  loadNewLocation(ts, flag) {
     fetch('http://localhost:3000/categories/lp?ts=' + ts)
       .then(results => {
         console.log(results.status);
         if (results.status === 200) {
-          ts_temp = 1;
+          flag = 1;
           return results.json();
         }
       }).catch(function (err) {
         console.log(err);
       }).then(data => {
-        if (ts_temp === 1) {
-          console.log(data);
+        if (flag === 1) {
+          data.categories.forEach(element => {
+            this.createMarkerforNewLocation(element.DiaChi);
+          });
           ts = data.return_ts;
-          ts_temp = 0;
+          flag = 0;
         }
         this.loadNewLocation(ts);
       })
-
   }
 
   // Try HTML5 geolocation.
   fetchPlaces(mapProps, map) {
-    //const { google } = mapProps;
-    //const service = new google.maps.places.PlacesService(map);
     console.log("onReady");
     var ts = 0;
-    var ts_temp = 0;
-    this.loadNewLocation(ts, ts_temp);
+    var flag = 0;
+    this.loadNewLocation(ts, flag);
 
-    // fetch('https://maps.googleapis.com/maps/api/geocode/json?address=khoa+hoc+tu+nhien&key=AIzaSyAoBGukMgWP82wOqAaDqkXeslb9V4jXH28')
-    //   .then(results => {
-    //     return results.json();
-    //   }).then(data => {
-    //     //lấy location(lag,lng)  dựa trên address
-    //     //console.log(data.results[0].geometry.location);
-    //   })
+   
   }
 
   mapClicked(mapProps, map, clickEvent) {
