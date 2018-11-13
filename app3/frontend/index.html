@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Long-Polling</title>
+	<meta charset="utf-8">
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+</head>
+
+<body>
+	<div class="container-fluid">
+		<div class="col-sm-12 col-md-12">
+			<table class="table table-hover">
+				<thead>
+					<tr>
+						<th>Mã đặt xe</th>
+						<th>Tên khách hàng</th>
+						<th>Điện thoại</th>
+						<th>Địa chỉ đón khách</th>
+						<th>Địa chỉ trả khách khách</th>
+						<th>Tình trạng</th>
+						<th>Ghi chú</th>
+					</tr>
+				</thead>
+				<tbody id="list">
+				</tbody>
+			</table>
+		</div>
+	</div>
+	<script id="template" type="text/x-handlebars-template">
+		{{#each this}}
+			<tr>
+				<td>{{ID}}</td>
+				<td>{{name}}</td>
+				<td>{{number}}</td>
+				<td>{{sourceAddress}}</td>
+				<td>{{desAddress}}</td>
+				<td>{{status}}</td>
+				<td>{{note}}</td>
+			</tr>
+		{{/each}}
+	</script>
+	<script id="template" type="text/x-handlebars-template">
+		{{#each this}}
+			<li>{{name}}</li>
+		{{/each}}
+	</script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.12/handlebars.min.js"></script>
+	<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+	<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
+	 crossorigin="anonymous"></script>
+
+	<script type="text/javascript">
+		ts = 0;
+
+		window.onload = function () {
+			loadCategories();
+		}
+
+		var loadCategories = function () {
+
+			var instance = axios.create({
+				baseURL: 'http://localhost:3001/app3',
+				timeout: 15000
+			});
+
+			instance.get('lp?ts=' + ts)
+				.then(function (res) {
+					if (res.status === 200) {
+						ts = res.data.return_ts;
+						var source = document.getElementById('template').innerHTML;
+						var template = Handlebars.compile(source);
+						var html = template(res.data.categories);
+						document.getElementById('list').innerHTML += html;
+					}
+				}).catch(function (err) {
+					console.log(err);
+				}).then(function () {
+					loadCategories();
+				})
+		}
+	</script>
+</body>
+
+</html>
