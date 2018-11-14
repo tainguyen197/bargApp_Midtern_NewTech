@@ -6,6 +6,7 @@ var fileSync = require('lowdb/adapters/FileSync');
 var router = express.Router();
 
 var adapter = new fileSync('./db.json');
+//var adapter = new fileSync('../../app3/backend/db.json');
 var db = low(adapter);
 
 router.get('/', (req, res) => {
@@ -40,10 +41,14 @@ router.post('/', (req, res) => {
     var c = {
         name: req.body.name,
         number: req.body.number,
-        address: req.body.address,
+        sourceAddress: req.body.address,
         note: req.body.note,
         iat: moment().unix()
-    }
+	}
+	/*var c = {
+        name: req.body.name,
+        iat: moment().unix()
+	}*/
 	console.log(c);
     db.get('categories').push(c).write();
     res.statusCode = 201;
@@ -51,6 +56,37 @@ router.post('/', (req, res) => {
         msg: 'added',
         data: c
     });
+})
+
+router.get('/load/', (req, res) => {
+    var ts = 0;
+    if (req.query.ts) {
+        ts = +req.query.ts;
+    }
+    
+    var loop = 0;
+    var fn = () => {
+        var categories = db.get('categories').filter(c => c.iat >= ts);//k 
+        var return_ts = moment().unix();
+        if (categories.size() > 0) {
+            console.log('co moi');
+            res.json({
+                return_ts,
+                categories
+            });
+        } else {
+            loop++;
+            console.log(`loop: ${loop}`);
+            if (loop < 4) {
+                setTimeout(fn, 2500);
+            } else {
+                res.statusCode = 204;
+                res.end('no data');
+            }
+        }
+    }
+    //chỗ nào lấy dữ liệu đâu
+    fn();
 })
 
 

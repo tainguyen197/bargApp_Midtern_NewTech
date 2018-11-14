@@ -62,13 +62,14 @@
 		var loadCategories = function () {
 
 			var instance = axios.create({
-				baseURL: 'http://localhost:3001/app3',
+				baseURL: 'http://localhost:3000/vntojp/load',
 				timeout: 15000
 			});
 
-			instance.get('lp?ts=' + ts)
+			instance.get('?ts=' + ts)
 				.then(function (res) {
 					if (res.status === 200) {
+						console.log(res.data);
 						ts = res.data.return_ts;
 						var source = document.getElementById('template').innerHTML;
 						var template = Handlebars.compile(source);

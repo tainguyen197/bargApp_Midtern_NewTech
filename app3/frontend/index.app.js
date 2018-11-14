@@ -1,8 +1,8 @@
 $(function() {
-    // alert('msg');
+    alert('msg');
 
     $.ajax({
-        url: 'http://localhost:3000/api/products',
+        url: 'http://localhost:3001/c',
         type: 'GET',
         dataType: 'json',
         timeout: 10000
