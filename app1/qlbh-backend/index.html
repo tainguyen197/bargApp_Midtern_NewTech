@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>QLBH Client</title>
+		<meta charset="utf-8">
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+	</head>
+	<body>
+		<div class="container-fluid">
+				<div class="col-sm-12 col-md-12">
+					<table class="table table-hover">
+						<thead>
+							<tr>
+								<th>#</th>
+								<th>Name</th>
+								<th>Price</th>
+								<th>Desc</th>
+								<th>Quantity</th>
+							</tr>
+						</thead>
+						<tbody id="products">
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+		<script id="product-template" type="text/x-handlebars-template">
+			{{#each this}}
+				<tr>
+					<td>{{ProID}}</td>
+					<td>{{ProName}}</td>
+					<td>{{Price}}</td>
+					<td>{{TinyDes}}</td>
+					<td>{{Quantity}}</td>
+				</tr>
+			{{/each}}
+
+		<script src="index.app.js"></script>
+	</body>
+</html>

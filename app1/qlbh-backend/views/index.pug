@@ -1,0 +1,27 @@
+doctype html
+html
+  head
+    title Long-Polling
+    meta(charset='utf-8')
+    link(rel='stylesheet', href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css', integrity='sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u', crossorigin='anonymous')
+  body
+    .col-sm-4
+    .col-sm-4
+      form(action='/vntojp/', method='POST')
+        .form-group
+          label(for='usr') Tên hành hàng:
+          input#usr.form-control(type='text', name='name', value=vietnamese, placeholder='Tên khách hàng')
+        .form-group
+          label(for='usr') Điện thoại:
+          input#usr.form-control(type='text', name='number', value=vietnamese, placeholder='Số điện thoại')
+        .form-group
+          label(for='usr') Địa chỉ đón khách:
+          input#usr.form-control(type='text', name='address', value=vietnamese, placeholder='Địa chỉ đón khách')
+        .form-group
+          label(for='usr') Ghi chú:
+          input#usr.form-control(type='text', name='note', value=vietnamese, placeholder='Ghi chú')
+        button.btn.btn-success(type='submit') Đặt chuyến đi
+    script(src='https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.12/handlebars.min.js')
+    script(src='https://unpkg.com/axios/dist/axios.min.js')
+    script(src='https://code.jquery.com/jquery-3.3.1.min.js')
+    script(src='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js', integrity='sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa', crossorigin='anonymous')
