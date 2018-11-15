@@ -11,10 +11,11 @@
 <body>
 	<div class="container-fluid">
 		<div class="col-sm-12 col-md-12">
-			<table class="table table-hover">
+			<table id = "tableId" class="table table-hover">
 				<thead>
 					<tr>
 						<th>Mã đặt xe</th>
+						<th name="iat">Thời gian</th>
 						<th>Tên khách hàng</th>
 						<th>Điện thoại</th>
 						<th>Địa chỉ đón khách</th>
@@ -32,6 +33,7 @@
 		{{#each this}}
 			<tr>
 				<td>{{ID}}</td>
+				<td>{{iat}}</td>
 				<td>{{name}}</td>
 				<td>{{number}}</td>
 				<td>{{sourceAddress}}</td>
@@ -51,7 +53,7 @@
 	<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
 	 crossorigin="anonymous"></script>
-
+	
 	<script type="text/javascript">
 		ts = 0;
 
@@ -75,13 +77,64 @@
 						var template = Handlebars.compile(source);
 						var html = template(res.data.categories);
 						document.getElementById('list').innerHTML += html;
+						var table = document.getElementById("tableId");
+    					var rows = table.getElementsByTagName("tr");	
+    					for (i = 0; i < rows.length; i++) {
+        					row = table.rows[i];
+        					row.onclick = function(){
+    							/*var cell = this.getElementsByTagName("td")[0];
+            					var id = cell.innerHTML;
+								alert("id:" + id);*/
+								var url = 'http://localhost:3001/app3/lp';
+								var win = window.open(url, '_blank');
+								win.focus();
+							};
+						}
+						var switching, i, x, y, shouldSwitch;
+						//table = document.getElementById("tableId");
+						switching = true;
+						console.log(table);
+						/*Make a loop that will continue until
+						no switching has been done:*/
+						while (switching) {
+							//start by saying: no switching is done:
+							switching = false;
+							//rows = table.getElementsByTagName("tr");
+							console.log(rows);
+
+							/*Loop through all table rows (except the
+							first, which contains table headers):*/
+							for (i = 1; i < (rows.length - 1); i++) {
+							//start by saying there should be no switching:
+							shouldSwitch = false;
+							/*Get the two elements you want to compare,
+							one from current row and one from the next:*/
+							x = rows[i].getElementsByTagName("TD")[1];
+							y = rows[i + 1].getElementsByTagName("TD")[1];
+							//check if the two rows should switch place:
+							if (x.innerHTML.toLowerCase() <= y.innerHTML.toLowerCase()) {
+								//if so, mark as a switch and break the loop:
+								shouldSwitch = true;
+								break;
+							}
+							}
+							if (shouldSwitch) {
+							/*If a switch has been marked, make the switch
+							and mark that a switch has been done:*/
+							rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+							switching = true;
+							}
+						}
 					}
 				}).catch(function (err) {
 					console.log(err);
-				}).then(function () {
-					loadCategories();
-				})
-		}
+					}).then(function () {
+						loadCategories();
+					})
+	}
+	</script>
+	<script>
+    		
 	</script>
 </body>
 
