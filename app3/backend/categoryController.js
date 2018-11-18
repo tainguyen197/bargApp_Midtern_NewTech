@@ -24,6 +24,10 @@ router.get('/', (req, res) => {
 })
 
 router.get('/lp', (req, res) => {
+    res.render('map');
+})
+
+/*router.get('/lp', (req, res) => {
     var ts = 0;
     if (req.query.ts) {
         ts = +req.query.ts;
@@ -54,7 +58,7 @@ router.get('/lp', (req, res) => {
     }
     //chỗ nào lấy dữ liệu đâu
     fn();
-})
+})*/
 
 router.post('/', (req, res) => {
     var c = {

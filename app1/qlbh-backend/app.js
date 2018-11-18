@@ -11,7 +11,7 @@ app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
 app.use(morgan('dev'));
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: false }));//copy thieu dong nay ne
+app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cors());
 
 app.get('/', (req, res) => {
