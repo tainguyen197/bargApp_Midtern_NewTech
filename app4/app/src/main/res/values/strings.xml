@@ -1,8 +1,0 @@
-<resources>
-    <string name="app_name">App for driver</string>
-    <string name="title_activity_maps">Map</string>
-    <string name="someplace">Place</string>
-    <string name="default_info_title">default_info_title</string>
-    <string name="default_info_snippet">default_info_snippet</string>
-    <string name="pick_place">pick_place</string>
-</resources>

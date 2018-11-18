@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Map, Marker, GoogleApiWrapper } from 'google-maps-react';
-import {Button, Modal} from "react-bootstrap";
+import { Button, Modal } from "react-bootstrap";
 import axios from 'axios';
 import moment from 'moment';
 // import logo from './logo.svg';
@@ -13,13 +13,20 @@ class App extends Component {
     super(props);
     // this.loadNewLocation = this.loadNewLocation.bind(this);
     this.onReadyMap = this.onReadyMap.bind(this);
-    this.createMarkerforNewLocation = this.createMarkerforNewLocation.bind(this);
+    // this.createMarkerforNewLocation = this.createMarkerforNewLocation.bind(this);
     // this.placeMarker = this.placeMarker.bind(this);
     // this.updateLocation = this.updateLocation.bind(this);
-    this.onMarkerDragEnd = this.onMarkerDragEnd.bind(this);
     this.loadNewCustomer = this.loadNewCustomer.bind(this);
+    this.onMarkerDragEnd = this.onMarkerDragEnd.bind(this);
     this.handleHide = this.handleHide.bind(this);
-    this.state = { userLocation: { lat: 32, lng: 32 }, loading: true, show: false, time:10, map: null, data: null};
+    this.state = { 
+      userLocation: { lat: 32, lng: 32 }, 
+      loading: true, 
+      show: false, 
+      time: 10, 
+      map: null, 
+      data: null,
+      status: 0 };//0: ready , 1: have customer
     this.showNewReq = this.showNewReq.bind(this);
     this.showWays = this.showWays.bind(this);
   }
@@ -28,7 +35,7 @@ class App extends Component {
     this.setState({ show: false });
   }
 
-  showNewReq(){
+  showNewReq() {
     console.log("showNewReq");
     //this.setState({show: true});
   }
@@ -39,7 +46,7 @@ class App extends Component {
     var ts = 0;
     var flag = 0;
     this.loadNewCustomer();
-    this.setState({map: map});
+    this.setState({ map: map });
   }
 
   loadNewCustomer() {
@@ -53,32 +60,32 @@ class App extends Component {
         console.log(err);
       }).then(data => {
         console.log(data);
-        if(!data){
+        if (!data) {
           setTimeout(this.loadNewCustomer, 5000);
           return;
         }
         this.setState({ show: true });
         this.setInterval();
         var sdt = data.categories[0].SDT;
-        this.setState({data: data.categories[0]});
+        this.setState({ data: data.categories[0] });
         console.log(sdt);
         setTimeout(this.loadNewCustomer, 12000);
-        var json = {SDT: sdt};
+        var json = { SDT: sdt };
         //Cập nhật trạng thái skip
         fetch('http://localhost:3000/categories/updateReq', {
-            method: 'POST',
-            mode: 'cors',
-            body: JSON.stringify(json),
-            headers: {
-              "Content-Type": "application/json; charset=utf-8",
-              "Access-Control-Allow-Origin": "null"
+          method: 'POST',
+          mode: 'cors',
+          body: JSON.stringify(json),
+          headers: {
+            "Content-Type": "application/json; charset=utf-8",
+            "Access-Control-Allow-Origin": "null"
           },
-          }).then(function (response) {
-            console.log(response);
-            return response.json();
-          }).catch(function (err){
-            console.log(err);
-          }).
+        }).then(function (response) {
+          console.log(response);
+          return response.json();
+        }).catch(function (err) {
+          console.log(err);
+        }).
           then(function (data) {
             console.log(data);
           });
@@ -99,7 +106,7 @@ class App extends Component {
 
     });
 
-   
+
   }
 
   centerMoved(mapProps, map) {
@@ -131,7 +138,7 @@ class App extends Component {
     console.log(newLat);
     console.log(newLng);
 
-
+    var _this = this;
     var template = 'https://maps.googleapis.com/maps/api/distancematrix/json?units=imperial&';
     var key = '&key=AIzaSyAoBGukMgWP82wOqAaDqkXeslb9V4jXH28'
     var fromLocation = 'origins=' + coord.mapCenter.lat + ',' + coord.mapCenter.lng;
@@ -146,61 +153,55 @@ class App extends Component {
         console.log(data.rows[0].elements[0].distance.value);
         var distance = data.rows[0].elements[0].distance.value
         this.showNewReq();
-        if (distance > 1000) {
+        if (distance > 1000 && _this.state.status === 0) {
           if (window.confirm('Vị trí không được quá 100m, vui lòng cập nhật lại vị trí!')) this.onCancel();
-          //
-          //console.log(this.state.lo);
-          
+        }
+        else{
+          _this.setState({ userLocation: { lat: newLat, lng: newLng }});
+          this.showWays();
         }
       })
       .catch(err => console.log(err));
 
   }
 
-  createMarkerforNewLocation() {
+  showWays() {
+    //Tắt thông báo
+    this.setState({ show: false});
+    this.setState({ status: 1});
+    //Lấy vị trí thông qua địa chỉ 
     var template = 'https://maps.googleapis.com/maps/api/geocode/json?address=';
     var key = '&key=AIzaSyAoBGukMgWP82wOqAaDqkXeslb9V4jXH28'
     var req = template + this.state.data.DiaChi + key;
     console.log(req);
     fetch(req)
       .then(results => {
-        return results.data.data;
+        return results.json();
       }).then(data => {
         //lấy location(lag,lng)  dựa trên address
         var location = data.results[0].geometry.location;
-        var marker = new window.google.maps.Marker({
-          position: { lat: 10.748133, lng: 106.788456 },
-          map: this.state.map,
-          animation: window.google.maps.Animation.BOUNCE,
+        console.log(location);
+        var origin = new window.google.maps.LatLng(this.state.userLocation.lat, this.state.userLocation.lng);
+        var destination = new window.google.maps.LatLng(location.lat, location.lng);
+        var DirectionsService = new window.google.maps.DirectionsService;
+        var directionsDisplay = new window.google.maps.DirectionsRenderer({
           draggable: true
+        })
+        directionsDisplay.setMap(this.state.map);
+        //Hiển thị marker tại location của customer
+        DirectionsService.route({
+          origin: origin,
+          destination: destination,
+          travelMode: window.google.maps.TravelMode.DRIVING,
+        }, (result, status) => {
+          if (status === 'OK') {
+            directionsDisplay.setDirections(result);
+          } else {
+            window.alert('Directions request failed due to ' + status);
+          }
         });
+
       })
-  }
-
-  showWays(){
-    //Lấy vị trí thông qua địa chỉ 
-    console.log(this.state.data);
-    //this.createMarkerforNewLocation();
-    
-    var origin = new window.google.maps.LatLng(this.state.userLocation.lat, this.state.userLocation.lng);
-    var destination =  new window.google.maps.LatLng(10.748133, 106.788456);
-    var DirectionsService = new window.google.maps.DirectionsService;
-    var directionsDisplay = new window.google.maps.DirectionsRenderer;
-    directionsDisplay.setMap(this.state.map);
-    //Hiển thị marker tại location của customer
-    DirectionsService.route({
-      origin: origin,
-      destination: destination,
-      travelMode: window.google.maps.TravelMode.DRIVING,
-    }, (result, status) => {
-      if (status === 'OK') {
-        directionsDisplay.setDirections(result);
-      } else {
-        window.alert('Directions request failed due to ' + status);
-      }
-    });
-
-    
   }
 
   // calculateAndDisplayRoute(directionsService, directionsDisplay) {
@@ -216,8 +217,8 @@ class App extends Component {
   //     }
   //   });
 
-    //Show đường đi đến location customer
-      
+  //Show đường đi đến location customer
+
   //   //this.setState(marker);
   //   //Sự kiện có sự kéo thả marker
   //   marker.addListener('dragend', function () {
@@ -262,10 +263,10 @@ class App extends Component {
 
   //}
 
-  currentTime(interval,val){
-    if(val === 0){
+  currentTime(interval, val) {
+    if (val === 0) {
       clearInterval(interval);
-      this.setState({show: false});
+      this.setState({ show: false });
       return;
     }
     this.setState({
@@ -273,12 +274,12 @@ class App extends Component {
     })
   }
 
-  setInterval(){
+  setInterval() {
     var val = 10;
-    var interval =  setInterval(() => this.currentTime(interval, val--),1000);
+    var interval = setInterval(() => this.currentTime(interval, val--), 1000);
   }
 
-  componentWillMount(){
+  componentWillMount() {
     //this.setInterval();
   }
 
@@ -296,7 +297,7 @@ class App extends Component {
       },
       () => {
         this.setState({ loading: false });
-  
+
       }
     );
   }
@@ -337,7 +338,7 @@ class App extends Component {
             </Modal.Title>
           </Modal.Header>
           <Modal.Body>
-           Bạn muốn nhận chuyến đi này? Tự động hủy trong {this.state.time} giây
+            Bạn muốn nhận chuyến đi này? Tự động hủy trong {this.state.time} giây
           </Modal.Body>
           <Modal.Footer>
             <Button onClick={this.showWays}>Bắt đầu chuyến đi</Button>

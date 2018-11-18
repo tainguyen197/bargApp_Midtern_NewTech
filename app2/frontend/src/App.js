@@ -76,9 +76,9 @@ class App extends Component {
     var template = 'https://maps.googleapis.com/maps/api/geocode/json?address=';
     var key = '&key=AIzaSyAoBGukMgWP82wOqAaDqkXeslb9V4jXH28'
     var req = template + element.DiaChi + key;
-    //console.log(address);
     fetch(req)
       .then(results => {
+        console.log(results);
         return results.json();
       }).then(data => {
         //lấy location(lag,lng)  dựa trên address
@@ -192,6 +192,5 @@ class App extends Component {
 }
 
 export default GoogleApiWrapper({
-  apiKey: ("YOUR_KEY")
-
+  apiKey: ("AIzaSyAoBGukMgWP82wOqAaDqkXeslb9V4jXH28")
 })(App)
