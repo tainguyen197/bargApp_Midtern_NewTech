@@ -3,10 +3,10 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
-import Trigger from './Popup'
+import LoginController from './LoginController'
 
-ReactDOM.render(<App />, document.getElementById('login'));
-//ReactDOM.render(<Trigger />, document.getElementById('popup'));
+ReactDOM.render(<App />, document.getElementById('index'));
+//ReactDOM.render(<LoginController />, document.getElementById('login'));
 
 
 // If you want your app to work offline and load faster, you can change

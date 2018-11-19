@@ -1,24 +1,19 @@
 import React, { Component } from 'react';
 import { Map, Marker, GoogleApiWrapper } from 'google-maps-react';
 import { Button, Modal } from "react-bootstrap";
-import axios from 'axios';
-import moment from 'moment';
-// import logo from './logo.svg';
 import './App.css';
-// import { promises } from 'fs';
-// import Async from 'react-promise'
+import LoginComponent from './LoginController';
 
 class App extends Component {
   constructor(props) {
     super(props);
-    // this.loadNewLocation = this.loadNewLocation.bind(this);
+
     this.onReadyMap = this.onReadyMap.bind(this);
-    // this.createMarkerforNewLocation = this.createMarkerforNewLocation.bind(this);
-    // this.placeMarker = this.placeMarker.bind(this);
-    // this.updateLocation = this.updateLocation.bind(this);
     this.loadNewCustomer = this.loadNewCustomer.bind(this);
     this.onMarkerDragEnd = this.onMarkerDragEnd.bind(this);
     this.handleHide = this.handleHide.bind(this);
+    this.getLoginComponent = this.getLoginComponent.bind(this);
+    this.onClickA = this.onClickA.bind(this);
     this.state = { 
       userLocation: { lat: 32, lng: 32 }, 
       loading: true, 
@@ -26,6 +21,7 @@ class App extends Component {
       time: 10, 
       map: null, 
       data: null,
+      showModalLogin: true,
       status: 0 };//0: ready , 1: have customer
     this.showNewReq = this.showNewReq.bind(this);
     this.showWays = this.showWays.bind(this);
@@ -40,6 +36,12 @@ class App extends Component {
     //this.setState({show: true});
   }
 
+  onClickA(data){
+    this.setState({
+      showModalLogin: data
+    });
+    console.log(data);
+  }
   // Try HTML5 geolocation.
   onReadyMap(mapProps, map) {
     console.log("onReady");
@@ -49,8 +51,14 @@ class App extends Component {
     this.setState({ map: map });
   }
 
+  getLoginComponent(){
+    if(!this.state.showModalLogin){
+      return <LoginComponent/>;
+    }
+    return null;
+  }
+
   loadNewCustomer() {
-    console.log('aaa');
     fetch('http://localhost:3000/categories/customer')
       .then(results => {
         if (results.status === 200) {
@@ -58,8 +66,7 @@ class App extends Component {
         }
       }).catch(function (err) {
         console.log(err);
-      }).then(data => {
-        console.log(data);
+      }).then(data => { 
         if (!data) {
           setTimeout(this.loadNewCustomer, 5000);
           return;
@@ -94,33 +101,6 @@ class App extends Component {
 
   }
 
-  makerDragend(marker) {
-    console.log(marker);
-  }
-
-  mapClicked(mapProps, map, clickEvent) {
-    console.log("Map Click");
-    var marker = new window.google.maps.Marker({
-      position: { lat: 10.748133, lng: 106.788456 },
-      map: map,
-
-    });
-
-
-  }
-
-  centerMoved(mapProps, map) {
-    console.log("Camera Moved")
-  }
-
-  onMouseoverMarker(props, marker, e) {
-    console.log("MouseoverMarker")
-  }
-
-  onMarkerClick = (evt) => {
-    console.log('a');
-  }
-
   renderMarkers(map, maps) {
     console.log("render");
   }
@@ -133,10 +113,16 @@ class App extends Component {
     var newLat = index.getPosition().lat();
     var newLng = index.getPosition().lng();
     var newPos = { lat: newLat, lng: newLng }
-    //console.log(JSON.stringify(location));
-    console.log(coord.mapCenter);
-    console.log(newLat);
-    console.log(newLng);
+    //this.setMap(null);
+    // //console.log(JSON.stringify(location));
+     //var marker = coord.google.maps.Marker;
+    
+    // google.maps.event.addListener(marker, 'click', function() {
+    //   marker.setVisible(false); // maps API hide call
+    // });
+    //console.log(marker.setVisible(false));
+    
+
 
     var _this = this;
     var template = 'https://maps.googleapis.com/maps/api/distancematrix/json?units=imperial&';
@@ -156,9 +142,12 @@ class App extends Component {
         if (distance > 1000 && _this.state.status === 0) {
           if (window.confirm('Vị trí không được quá 100m, vui lòng cập nhật lại vị trí!')) this.onCancel();
         }
-        else{
-          _this.setState({ userLocation: { lat: newLat, lng: newLng }});
-          this.showWays();
+        else if(_this.state.status === 1){
+          _this.state.userLocation.lat = newLat;
+          _this.state.userLocation.lng = newLng;
+
+          setTimeout(this.showWays, 2000);
+          
         }
       })
       .catch(err => console.log(err));
@@ -167,6 +156,7 @@ class App extends Component {
 
   showWays() {
     //Tắt thông báo
+    
     this.setState({ show: false});
     this.setState({ status: 1});
     //Lấy vị trí thông qua địa chỉ 
@@ -204,65 +194,6 @@ class App extends Component {
       })
   }
 
-  // calculateAndDisplayRoute(directionsService, directionsDisplay) {
-  //   directionsService.route({
-  //     origin: document.getElementById('start').value,
-  //     destination: document.getElementById('end').value,
-  //     travelMode: 'DRIVING'
-  //   }, function(response, status) {
-  //     if (status === 'OK') {
-  //       directionsDisplay.setDirections(response);
-  //     } else {
-  //       window.alert('Directions request failed due to ' + status);
-  //     }
-  //   });
-
-  //Show đường đi đến location customer
-
-  //   //this.setState(marker);
-  //   //Sự kiện có sự kéo thả marker
-  //   marker.addListener('dragend', function () {
-  //     var newLat = marker.getPosition().lat();
-  //     var newLng = marker.getPosition().lng();
-  //     //console.log(JSON.stringify(location));
-  //     //this.updateLocation(lat,lng);
-  //     var template = 'https://maps.googleapis.com/maps/api/geocode/json?latlng=';
-  //     var key = '&key=AIzaSyAoBGukMgWP82wOqAaDqkXeslb9V4jXH28'
-  //     var newLocation = newLat + ',' + newLng;
-  //     var req = template + newLocation + key;
-  //     //toa độ -> địa chỉ thực
-  //     fetch(req)
-  //       .then(results => {
-  //         return results.json();
-  //       }).then(data => {
-  //         //lấy location(lag,lng)  dựa trên address
-  //         var address = data.results[0].formatted_address;
-  //         //console.log(address);
-  //         var json = {SDT: element.SDT, DiaChi: address};
-  //         console.log(json);
-  //         fetch('http://localhost:3000/categories/update', {
-  //           method: 'POST',
-  //           mode: 'cors',
-  //           body: JSON.stringify(json),
-  //           headers: {
-  //             "Content-Type": "application/json; charset=utf-8",
-  //             "Access-Control-Allow-Origin": "null"
-  //         },
-  //         }).then(function (response) {
-  //           console.log(response);
-  //           return response.json();
-  //         }).catch(function (err){
-  //           console.log(err);
-  //         }).
-  //         then(function (data) {
-  //           console.log(data);
-  //         });
-  //       })
-  //   });
-  // }
-
-  //}
-
   currentTime(interval, val) {
     if (val === 0) {
       clearInterval(interval);
@@ -273,6 +204,8 @@ class App extends Component {
       time: val
     })
   }
+
+
 
   setInterval() {
     var val = 10;
@@ -308,8 +241,9 @@ class App extends Component {
     if (loading) {
       return null;
     }
-
+    console.log(this.props);
     return (
+     
       <div className="App">
         <Map google={this.props.google}
           className={'map'}
@@ -320,12 +254,13 @@ class App extends Component {
           onReady={this.onReadyMap}
           onDragend={this.centerMoved}
         >
+
           <Marker
-            onClick={this.onMarkerClick}
             draggable={true}
             onDragend={this.onMarkerDragEnd}
           ></Marker>
         </Map>
+        {this.state.showModalLogin && <LoginComponent sendData = {this.onClickA}/>}
         <Modal
           show={this.state.show}
           onHide={this.handleHide}
