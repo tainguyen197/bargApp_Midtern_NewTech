@@ -39,6 +39,6 @@ Cho phép tài xế đăng nhập vào hệ thống và sẵn sàng nhận thôn
 - *Tiêu chí chọn xe cho 1 request là xe READY và có đường đi (google maps, fallback với harversine) đến vị trí khách là ngắn nhất.*
 - *Hệ thống chỉ tìm N lần cho 1 request (N có thể cấu hình trên server). Nếu đủ N lần mà không có xe nhận, request được ghi nhận là “KHÔNG CÓ XE”.*
 - *Có tất cả M điện thoại viên và N định vị viên làm việc đồng thời.*
-- *Hệ thống hoạt động realtime. Sinh viên tự cài đặt, KHÔNG ĐƯỢC PHÉP SỬ DỤNG các cloud service như FIREBASE, …
-Mọi api đều phải cài đặt JWT access-token và refresh-token*
+- *Hệ thống hoạt động realtime. Sinh viên tự cài đặt, KHÔNG ĐƯỢC PHÉP SỬ DỤNG các cloud service như FIREBASE, …*
+- *Mọi api đều phải cài đặt JWT access-token và refresh-token*
 
