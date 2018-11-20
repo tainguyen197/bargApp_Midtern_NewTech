@@ -13,16 +13,18 @@ class App extends Component {
     this.onMarkerDragEnd = this.onMarkerDragEnd.bind(this);
     this.handleHide = this.handleHide.bind(this);
     this.getLoginComponent = this.getLoginComponent.bind(this);
-    this.onClickA = this.onClickA.bind(this);
-    this.state = { 
-      userLocation: { lat: 32, lng: 32 }, 
-      loading: true, 
-      show: false, 
-      time: 10, 
-      map: null, 
+    this.dataLogin = this.dataLogin.bind(this);
+    this.state = {
+      userLocation: { lat: 32, lng: 32 },
+      loading: true,
+      show: false,
+      time: 10,
+      map: null,
       data: null,
       showModalLogin: true,
-      status: 0 };//0: ready , 1: have customer
+      showMap: false,
+      status: 0
+    };//0: ready , 1: have customer
     this.showNewReq = this.showNewReq.bind(this);
     this.showWays = this.showWays.bind(this);
   }
@@ -36,9 +38,12 @@ class App extends Component {
     //this.setState({show: true});
   }
 
-  onClickA(data){
+  dataLogin(data) {
     this.setState({
       showModalLogin: data
+    });
+    this.setState({
+      showMap: true
     });
     console.log(data);
   }
@@ -51,9 +56,9 @@ class App extends Component {
     this.setState({ map: map });
   }
 
-  getLoginComponent(){
-    if(!this.state.showModalLogin){
-      return <LoginComponent/>;
+  getLoginComponent() {
+    if (!this.state.showModalLogin) {
+      return <LoginComponent />;
     }
     return null;
   }
@@ -66,7 +71,7 @@ class App extends Component {
         }
       }).catch(function (err) {
         console.log(err);
-      }).then(data => { 
+      }).then(data => {
         if (!data) {
           setTimeout(this.loadNewCustomer, 5000);
           return;
@@ -115,13 +120,13 @@ class App extends Component {
     var newPos = { lat: newLat, lng: newLng }
     //this.setMap(null);
     // //console.log(JSON.stringify(location));
-     //var marker = coord.google.maps.Marker;
-    
+    //var marker = coord.google.maps.Marker;
+
     // google.maps.event.addListener(marker, 'click', function() {
     //   marker.setVisible(false); // maps API hide call
     // });
     //console.log(marker.setVisible(false));
-    
+
 
 
     var _this = this;
@@ -142,12 +147,12 @@ class App extends Component {
         if (distance > 1000 && _this.state.status === 0) {
           if (window.confirm('Vị trí không được quá 100m, vui lòng cập nhật lại vị trí!')) this.onCancel();
         }
-        else if(_this.state.status === 1){
+        else if (_this.state.status === 1) {
           _this.state.userLocation.lat = newLat;
           _this.state.userLocation.lng = newLng;
 
           setTimeout(this.showWays, 2000);
-          
+
         }
       })
       .catch(err => console.log(err));
@@ -156,9 +161,9 @@ class App extends Component {
 
   showWays() {
     //Tắt thông báo
-    
-    this.setState({ show: false});
-    this.setState({ status: 1});
+
+    this.setState({ show: false });
+    this.setState({ status: 1 });
     //Lấy vị trí thông qua địa chỉ 
     var template = 'https://maps.googleapis.com/maps/api/geocode/json?address=';
     var key = '&key=AIzaSyAoBGukMgWP82wOqAaDqkXeslb9V4jXH28'
@@ -243,24 +248,31 @@ class App extends Component {
     }
     console.log(this.props);
     return (
-     
+
       <div className="App">
         <Map google={this.props.google}
-          className={'map'}
-          initialCenter={userLocation}
-          zoom={13}
-          onGoogleApiLoaded={({ map, maps }) => this.renderMarkers(map, maps)}
-          onClick={this.mapClicked}
-          onReady={this.onReadyMap}
-          onDragend={this.centerMoved}
+        zoom={2}
         >
-
-          <Marker
-            draggable={true}
-            onDragend={this.onMarkerDragEnd}
-          ></Marker>
+          {this.state.showModalLogin && <LoginComponent sendData={this.dataLogin} />}
         </Map>
-        {this.state.showModalLogin && <LoginComponent sendData = {this.onClickA}/>}
+        {this.state.showMap &&
+          <Map google={this.props.google}
+            className={'map'}
+            initialCenter={userLocation}
+            zoom={13}
+            onGoogleApiLoaded={({ map, maps }) => this.renderMarkers(map, maps)}
+            onClick={this.mapClicked}
+            onReady={this.onReadyMap}
+            onDragend={this.centerMoved}
+          >
+
+            <Marker
+              draggable={true}
+              onDragend={this.onMarkerDragEnd}
+            ></Marker>
+          </Map>}
+
+
         <Modal
           show={this.state.show}
           onHide={this.handleHide}
