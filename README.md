@@ -33,3 +33,12 @@ Cho phép tài xế đăng nhập vào hệ thống và sẵn sàng nhận thôn
 - *Khi tài xế đồng ý đón khách, app show đường đi ngắn nhất từ vị trí hiện tại đến vị trí khách trên bản đồ, giúp tài xế dễ dàng đi đến ĐIỂM ĐÓN KHÁCH.*
 - *Tài xế khi đón được khách, chọn lệnh BẮT ĐẦU; và sau khi đến nơi, chọn lệnh KẾT THÚC*
 - *Sau khi request kết thúc, tài xế được chuyển về trạng thái READY để có thể nhận được request khác*
+
+### NOTES
+- *Hệ thống chỉ tìm xe READY để gửi request, không tìm xe BUSY (đang đi đón khách, đang chở khách, offline)*
+- *Tiêu chí chọn xe cho 1 request là xe READY và có đường đi (google maps, fallback với harversine) đến vị trí khách là ngắn nhất.*
+- *Hệ thống chỉ tìm N lần cho 1 request (N có thể cấu hình trên server). Nếu đủ N lần mà không có xe nhận, request được ghi nhận là “KHÔNG CÓ XE”.*
+- *Có tất cả M điện thoại viên và N định vị viên làm việc đồng thời.*
+- *Hệ thống hoạt động realtime. Sinh viên tự cài đặt, KHÔNG ĐƯỢC PHÉP SỬ DỤNG các cloud service như FIREBASE, …*
+- *Mọi api đều phải cài đặt JWT access-token và refresh-token*
+
