@@ -43,7 +43,7 @@ router.get('/', verifyToken, (req, res) => {
 				.then(function (res1) {
 					if (res1.status === 200) {
                         console.log(".......");
-                        res.render('index');
+                        res.render('index', {idNameName: authData.id});
                     }
 				}).catch(function (err) {
                     console.log(err);

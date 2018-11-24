@@ -39,14 +39,13 @@ router.get('/', verifyToken, (req, res) => {
 			instance.post('?id=' + authData.id + '&password=' + authData.password)
 				.then(function (res1) {
 					if (res1.status === 200) {
-                        res.render('index', {idName: authData.id});
+                        res.render('index', {idNameName: authData.id});
                     }
 				}).catch(function (err) {
                         res.render('login');
                 })
 		}
     })
-    res.render('index');
 })
 
 function verifyToken(req, res, next){

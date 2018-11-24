@@ -1,116 +1,117 @@
 doctype html
-html
-  head
-    title Long-Polling
-    meta(charset='utf-8')
-    link(rel='stylesheet', href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css', integrity='sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u', crossorigin='anonymous')
-  body
-    .container-fluid
-      label(for='usr') Xin ch&agrave;o: 
-      span#result11=' '
-      span#result11=idName
-      .col-sm-12.col-md-12
-        table#tableId.table.table-hover
-          thead
-            tr
-              th Mã đặt xe
-              th(name='iat') Thời gian
-              th Tên khách hàng
-              th Điện thoại
-              th Địa chỉ đón khách
-              th Địa chỉ trả khách khách
-              th Tình trạng
-              th Ghi chú
-          tbody#list
-    script#template(type='text/x-handlebars-template').
-      {{#each this}}
-      <tr>
-      <td>{{ID}}</td>
-      <td>{{iat}}</td>
-      <td>{{name}}</td>
-      <td>{{number}}</td>
-      <td>{{sourceAddress}}</td>
-      <td>{{desAddress}}</td>
-      <td>{{status}}</td>
-      <td>{{note}}</td>
-      </tr>
-      {{/each}}
-    script#template(type='text/x-handlebars-template').
-      {{#each this}}
-      <li>{{name}}</li>
-      {{/each}}
-    script(src='https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.12/handlebars.min.js')
-    script(src='https://unpkg.com/axios/dist/axios.min.js')
-    script(src='https://code.jquery.com/jquery-3.3.1.min.js')
-    script(src='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js', integrity='sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa', crossorigin='anonymous')
-    script(type='text/javascript').
-      ts = 0;
-      window.onload = function () {
-      loadCategories();
-      }
-      var loadCategories = function () {
-      var instance = axios.create({
-      baseURL: 'http://localhost:3000/vntojp/load',
-      timeout: 15000
-      });
-      instance.get('?ts=' + ts)
-      .then(function (res) {
-      if (res.status === 200) {
-      console.log(res.data);
-      ts = res.data.return_ts;
-      var source = document.getElementById('template').innerHTML;
-      var template = Handlebars.compile(source);
-      var html = template(res.data.categories);
-      document.getElementById('list').innerHTML += html;
-      var table = document.getElementById("tableId");
-      var rows = table.getElementsByTagName("tr");
-      for (i = 0; i < rows.length; i++) {
-      row = table.rows[i];
-      row.onclick = function(){
-      var url = 'http://localhost:3001/app3/lp';
-      var win = window.open(url, '_blank');
-      win.focus();
-      };
-      }
-      var switching, i, x, y, shouldSwitch;
-      //table = document.getElementById("tableId");
-      switching = true;
-      console.log(table);
-      /*Make a loop that will continue until
-      no switching has been done:*/
-      while (switching) {
-      //start by saying: no switching is done:
-      switching = false;
-      //rows = table.getElementsByTagName("tr");
-      console.log(rows);
-      /*Loop through all table rows (except the
-      first, which contains table headers):*/
-      for (i = 1; i < (rows.length - 1); i++) {
-      //start by saying there should be no switching:
-      shouldSwitch = false;
-      /*Get the two elements you want to compare,
-      one from current row and one from the next:*/
-      x = rows[i].getElementsByTagName("TD")[1];
-      y = rows[i + 1].getElementsByTagName("TD")[1];
-      //check if the two rows should switch place:
-      if (x.innerHTML.toLowerCase() <= y.innerHTML.toLowerCase()) {
-      //if so, mark as a switch and break the loop:
-      shouldSwitch = true;
-      break;
-      }
-      }
-      if (shouldSwitch) {
-      /*If a switch has been marked, make the switch
-      and mark that a switch has been done:*/
-      rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
-      switching = true;
-      }
-      }
-      }
-      }).catch(function (err) {
-      console.log(err);
-      }).then(function () {
-      loadCategories();
-      })
-      }
-    script.
+head
+  title Long-Polling
+  meta(charset='utf-8')
+  link(rel='stylesheet' href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css' integrity='sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u' crossorigin='anonymous')
+.container-fluid
+  .col-sm-12.col-md-12
+  label(for='usr') Xin ch&agrave;o: 
+  span#result11=' '
+  span#result11=idNameName
+    table#tableId.table.table-hover
+      thead
+        tr
+          th M&atilde; &dstrok;&#x1EB7;t xe
+          th(name='iat') Th&#x1EDD;i gian
+          th T&ecirc;n kh&aacute;ch h&agrave;ng
+          th &Dstrok;i&#x1EC7;n tho&#x1EA1;i
+          th &Dstrok;&#x1ECB;a ch&#x1EC9; &dstrok;&oacute;n kh&aacute;ch
+          th &Dstrok;&#x1ECB;a ch&#x1EC9; tr&#x1EA3; kh&aacute;ch kh&aacute;ch
+          th T&igrave;nh tr&#x1EA1;ng
+          th Ghi ch&uacute;
+      tbody#list
+script#template(type='text/x-handlebars-template').
+  {{#each this}}
+  <tr>
+  <td>{{ID}}</td>
+  <td>{{iat}}</td>
+  <td>{{name}}</td>
+  <td>{{number}}</td>
+  <td>{{sourceAddress}}</td>
+  <td>{{desAddress}}</td>
+  <td>{{status}}</td>
+  <td>{{note}}</td>
+  </tr>
+  {{/each}}
+script#template(type='text/x-handlebars-template').
+  {{#each this}}
+  <li>{{name}}</li>
+  {{/each}}
+script(src='https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.12/handlebars.min.js')
+script(src='https://unpkg.com/axios/dist/axios.min.js')
+script(src='https://code.jquery.com/jquery-3.3.1.min.js')
+script(src='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js' integrity='sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa' crossorigin='anonymous')
+script(type='text/javascript').
+  ts = 0;
+  window.onload = function () {
+  loadCategories();
+  }
+  var loadCategories = function () {
+  var instance = axios.create({
+  baseURL: 'http://localhost:3000/vntojp/load',
+  timeout: 15000
+  });
+  instance.get('?ts=' + ts)
+  .then(function (res) {
+  if (res.status === 200) {
+  console.log(res.data);
+  ts = res.data.return_ts;
+  var source = document.getElementById('template').innerHTML;
+  var template = Handlebars.compile(source);
+  var html = template(res.data.categories);
+  document.getElementById('list').innerHTML += html;
+  var table = document.getElementById("tableId");
+  var rows = table.getElementsByTagName("tr");
+  for (i = 0; i < rows.length; i++) {
+  row = table.rows[i];
+  row.onclick = function(){
+  /*var cell = this.getElementsByTagName("td")[0];
+  var id = cell.innerHTML;
+  alert("id:" + id);*/
+  var url = 'http://localhost:3001/app3/lp';
+  var win = window.open(url, '_blank');
+  win.focus();
+  };
+  }
+  var switching, i, x, y, shouldSwitch;
+  //table = document.getElementById("tableId");
+  switching = true;
+  console.log(table);
+  /*Make a loop that will continue until
+  no switching has been done:*/
+  while (switching) {
+  //start by saying: no switching is done:
+  switching = false;
+  //rows = table.getElementsByTagName("tr");
+  console.log(rows);
+  /*Loop through all table rows (except the
+  first, which contains table headers):*/
+  for (i = 1; i < (rows.length - 1); i++) {
+  //start by saying there should be no switching:
+  shouldSwitch = false;
+  /*Get the two elements you want to compare,
+  one from current row and one from the next:*/
+  x = rows[i].getElementsByTagName("TD")[1];
+  y = rows[i + 1].getElementsByTagName("TD")[1];
+  //check if the two rows should switch place:
+  if (x.innerHTML.toLowerCase() <= y.innerHTML.toLowerCase()) {
+  //if so, mark as a switch and break the loop:
+  shouldSwitch = true;
+  break;
+  }
+  }
+  if (shouldSwitch) {
+  /*If a switch has been marked, make the switch
+  and mark that a switch has been done:*/
+  rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+  switching = true;
+  }
+  }
+  }
+  }).catch(function (err) {
+  console.log(err);
+  }).then(function () {
+  loadCategories();
+  })
+  }
+script.
