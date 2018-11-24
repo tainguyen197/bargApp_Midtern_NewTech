@@ -4,6 +4,7 @@ var moment = require('moment');
 var low = require('lowdb');
 var fileSync = require('lowdb/adapters/FileSync');
 const jwt = require('jsonwebtoken');
+var axios = require('axios');
 
 var router = express.Router();
 
@@ -12,7 +13,7 @@ var adapter = new fileSync('./db.json');
 var db = low(adapter);
 var Au = '';
 router.get('/', verifyToken, (req, res) => {
-    console.log("456");
+    /*console.log("456");
 	jwt.verify(req.token, '123456key', (err, authData) => {
 		if(err){
             console.log("2");
@@ -35,7 +36,32 @@ router.get('/', verifyToken, (req, res) => {
 			}
 		}
     })
-    res.render('index');
+    res.render('index');*/
+    console.log("456");
+	jwt.verify(req.token, '123456key', (err, authData) => {
+		if(err){
+			res.render('login');
+		}
+		else{
+			console.log("-----------");
+            console.log(authData);
+            authData = authData.thisUser;
+            console.log("6666");
+            console.log(authData);
+			var instance = axios.create({
+                baseURL: 'http://localhost:3000/login',
+				timeout: 15000
+			});
+			instance.post('?id=' + authData.UserName + '&password=' + authData.Password)
+				.then(function (res1) {
+					if (res1.status === 200) {
+                        res.render('index', {idNameName: authData.HoTen});
+                    }
+				}).catch(function (err) {
+                        res.render('login');
+                })
+		}
+    })
 })
 
 function verifyToken(req, res, next){
@@ -82,7 +108,7 @@ function getCookie(cname, cookie) {
 })*/
 
 router.post('/', verifyToken, (req, res) => {
-    jwt.verify(req.token, '123456key', (err, authData) => {
+    /*jwt.verify(req.token, '123456key', (err, authData) => {
 		if(err){
             console.log("2");
             console.log(err);
@@ -107,14 +133,50 @@ router.post('/', verifyToken, (req, res) => {
                     note: req.body.note,
                     iat: moment().unix()
                 }
-                /*var c = {
-                    name: req.body.name,
-                    iat: moment().unix()
-                }*/
                 console.log(c);
                 db.get('categories').push(c).write();
                 res.render('index', {idName: authData.id});
 			}
+		}
+    })*/
+    jwt.verify(req.token, '123456key', (err, authData) => {
+		if(err){
+			res.render('login');
+		}
+		else{
+			console.log("-----------");
+            console.log(authData);
+            authData = authData.thisUser;
+            console.log("6666");
+            console.log("authData");
+			var instance = axios.create({
+                baseURL: 'http://localhost:3000/login',
+				timeout: 15000
+			});
+			instance.post('?id=' + authData.UserName + '&password=' + authData.Password)
+				.then(function (res1) {
+					if (res1.status === 200) {
+                        var instance1 = axios.create({
+                            baseURL: 'http://localhost:3000/customer/add',
+                            headers:{
+                                cookie: 'Bearer='+req.token
+                            },
+                            timeout: 15000
+                        });
+                        instance1.post('?HoTen=' + req.body.name + '&SDT=' + req.body.number + '&DiaChi=' + req.body.address + '&GhiChu=' + req.body.note)
+                            .then(function (res1) {
+                                if (res1.status === 200) {
+                                    res.render('index', {idNameName: authData.HoTen});
+                                }
+                            }).catch(function (err) {
+                                    res.render('login');
+                            })
+                        //db.get('categories').push(c).write();
+                        res.render('index', {idNameName: authData.HoTen, note1: 'Đặt xe thành công!'});
+                    }
+				}).catch(function (err) {
+                        res.render('login');
+                })
 		}
     })
 })

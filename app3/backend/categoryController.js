@@ -39,7 +39,7 @@ router.get('/', verifyToken, (req, res) => {
                 baseURL: 'http://localhost:3000/login',
 				timeout: 15000
 			});
-			instance.post('?id=' + authData.id + '&password=' + authData.password)
+			instance.post('?id=' + authData.UserName + '&password=' + authData.Password)
 				.then(function (res1) {
 					if (res1.status === 200) {
                         console.log(".......");
@@ -54,8 +54,6 @@ router.get('/', verifyToken, (req, res) => {
 })
 
 function verifyToken(req, res, next){
-    console.log("4444");
-    console.log(req.headers.cookie);
     var bearerHeader = req.headers.cookie || req.query.token || req.body.token;
 	if(typeof bearerHeader !== 'undefined'){
         req.token = getCookie('Bearer', bearerHeader);

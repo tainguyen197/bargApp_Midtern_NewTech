@@ -23,7 +23,7 @@ app.use('/', login);
 app.use('/api/products/', productCtrl);
 app.use('/vntojp/', vntojp);
 app.use('/jptovn/', jptovn);
-var port = process.env.PORT || 3000;
+var port = process.env.PORT || 3001;
 app.listen(port, () => {
     console.log(`QLBH API is running on port ${port}`);
 });

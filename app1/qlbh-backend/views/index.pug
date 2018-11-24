@@ -7,8 +7,8 @@ head
 .col-sm-4
   label(for='usr') Xin ch&agrave;o: 
   span#result11=' '
-  span#result11=idName
-  form(action='/vntojp/' method='POST')
+  span#result11=idNameName
+  form(action='/vntojp' method='POST')
     .form-group
       label(for='usr') T&ecirc;n h&agrave;nh h&agrave;ng:
       input#usr.form-control(type='text' name='name' placeholder='Tên khách hàng')
@@ -22,6 +22,7 @@ head
       label(for='usr') Ghi ch&uacute;:
       input#usr.form-control(type='text' name='note' placeholder='Ghi chú')
     button.btn.btn-success(type='submit') &Dstrok;&#x1EB7;t chuy&#x1EBF;n &dstrok;i
+    span#result13=note1
 script(src='https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.12/handlebars.min.js')
 script(src='https://unpkg.com/axios/dist/axios.min.js')
 script(src='https://code.jquery.com/jquery-3.3.1.min.js')

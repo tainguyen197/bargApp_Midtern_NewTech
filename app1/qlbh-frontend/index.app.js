@@ -2,7 +2,7 @@ $(function() {
     // alert('msg');
 
     $.ajax({
-        url: 'http://localhost:3000/api/products',
+        url: 'http://localhost:3001/api/products',
         type: 'GET',
         dataType: 'json',
         timeout: 10000

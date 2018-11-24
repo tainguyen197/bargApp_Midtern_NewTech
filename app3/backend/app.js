@@ -21,7 +21,7 @@ app.use('/app3', categoryCtrl);
 app.use('/', login);
 
 
-var PORT = process.env.PORT || 3001;
+var PORT = process.env.PORT || 3003;
 app.listen(PORT, () => {
     console.log(`API running on PORT ${PORT}`);
 });

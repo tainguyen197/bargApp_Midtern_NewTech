@@ -9,7 +9,6 @@ var adapter = new fileSync('./db.json');
 var db = low(adapter);
 
 router.get('/', verifyToken, (req, res) => {
-    console.log(req);
     /*var ts = 0;
     if (req.query.ts) {
         ts = +req.query.ts;
@@ -36,10 +35,10 @@ router.get('/', verifyToken, (req, res) => {
                 baseURL: 'http://localhost:3000/login',
 				timeout: 15000
 			});
-			instance.post('?id=' + authData.id + '&password=' + authData.password)
+			instance.post('?id=' + authData.UserName + '&password=' + authData.Password)
 				.then(function (res1) {
 					if (res1.status === 200) {
-                        res.render('index', {idNameName: authData.id});
+                        res.render('index', {idNameName: authData.HoTen});
                     }
 				}).catch(function (err) {
                         res.render('login');
@@ -54,7 +53,6 @@ function verifyToken(req, res, next){
     var bearerHeader = req.headers.cookie || req.query.token || req.body.token;
 	if(typeof bearerHeader !== 'undefined'){
         req.token = getCookie('Bearer', bearerHeader);
-        console.log(req.token);
     }
     next();
 }

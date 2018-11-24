@@ -5,11 +5,12 @@ var fileSync = require('lowdb/adapters/FileSync');
 var router = express.Router();
 const jwt = require('jsonwebtoken');
 var adapter = new fileSync('./db.json');
+var axios = require('axios');
 //var adapter = new fileSync('../../app3/backend/db.json');
 var db = low(adapter);
 
 router.get('/', verifyToken, (req, res) => {
-	jwt.verify(req.token, '123456key', (err, authData) => {
+	/*jwt.verify(req.token, '123456key', (err, authData) => {
 		if(err){
             console.log("2");
             console.log(err);
@@ -31,7 +32,32 @@ router.get('/', verifyToken, (req, res) => {
 			}
 		}
     })
-    res.render('index');
+	res.render('index');*/
+	jwt.verify(req.token, '123456key', (err, authData) => {
+		if(err){
+			res.render('login');
+		}
+		else{
+			console.log("-----------");
+            console.log(authData);
+            authData = authData.thisUser;
+            console.log("6666");
+            console.log("authData");
+			var instance = axios.create({
+                baseURL: 'http://localhost:3000/login',
+				timeout: 15000
+			});
+			instance.post('?id=' + authData.UserName + '&password=' + authData.Password)
+				.then(function (res1) {
+					if (res1.status === 200) {
+                        res.render('index', {idNameName: authData.HoTen});
+                    }
+				}).catch(function (err) {
+                        res.render('login');
+                })
+		}
+    })
+	
 })
 
 function verifyToken(req, res, next){
