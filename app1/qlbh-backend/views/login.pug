@@ -1,22 +1,76 @@
 doctype html
-html
-  head
-    title Long-Polling
-    meta(charset='utf-8')
-    link(rel='stylesheet', href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css', integrity='sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u', crossorigin='anonymous')
-  body
-    .col-sm-4
-    .col-sm-4
-      form(action='/login/', method='POST')
-        .form-group
-          label(for='usr') Tài khoảng:
-          input#usr.form-control(type='text', name='id', placeholder='Tài khoảng')
-        .form-group
-          label(for='usr') Mật khẩu:
-          input#exampleInputPassword1.form-control(type='password', name='password', placeholder='Mật khẩu')
-        button.btn.btn-success(type='submit') Đăng nhập
-        span#result11=note
-        script(src='https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.12/handlebars.min.js')
-        script(src='https://unpkg.com/axios/dist/axios.min.js')
-        script(src='https://code.jquery.com/jquery-3.3.1.min.js')
-        script(src='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js', integrity='sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa', crossorigin='anonymous')
+head
+  title Long-Polling
+  meta(charset='utf-8')
+  link(rel='stylesheet' href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css' integrity='sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u' crossorigin='anonymous')
+form(name='frm')
+  .col-sm-4
+  .col-sm-4
+    span#note
+    .form-group
+      label(for='usr') T&agrave;i kho&#x1EA3;ng:
+      input.form-control(type='text' name='id' placeholder='Tài khoảng')
+    .form-group
+      label(for='usr') M&#x1EAD;t kh&#x1EA9;u:
+      input.form-control(name='password' type='password' placeholder='Mật khẩu')
+    input.btn.btn-primary(type='button' value='Đăng nhập' onclick='DangNhap(this.form)')
+script(src='https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.12/handlebars.min.js')
+script(src='https://unpkg.com/axios/dist/axios.min.js')
+script(src='https://code.jquery.com/jquery-3.3.1.min.js')
+script(src='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js' integrity='sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa' crossorigin='anonymous')
+script(type='text/javascript').
+  /*var instance = axios.create({
+  baseURL: 'http://localhost:3000/login/test',
+  headers: {
+  'Authorization': 'Bearer ' + document.cookie
+  },
+  timeout: 15000
+  });
+  instance.post('')
+  .then(function (res) {
+  if (res.data.test === 0) {
+  window.open("http://localhost:3000/","_self");
+  }
+  else{
+  window.open("http://localhost:3000/vntojp","_self");
+  }
+  }).catch(function (err) {
+  console.log(err)
+  })
+  }*/
+  function DangNhap(frm){
+  var instance = axios.create({
+  baseURL: 'http://localhost:3000/login',
+  headers: {
+  'Authorization': 'Bearer ' + document.cookie
+  },
+  timeout: 15000
+  });
+  instance.post('?id=' + frm.id.value + '&password=' + frm.password.value)
+  .then(function (res) {
+  if (res.status === 200) {
+  document.cookie = 'Bearer='+res.data.token;
+  console.log("5555");
+  console.log(document.cookie);
+  //console.log(Req;uest.cookie["app11"].value);
+  window.open("http://localhost:3000/vntojp", "_self");
+  }
+  }).catch(function (err) {
+  document.getElementById("note").innerHTML = err.response.data
+  })
+  }
+  function getCookie(cname) {
+  var name = cname + "=";
+  var decodedCookie = decodeURIComponent(document.cookie);
+  var ca = decodedCookie.split(';');
+  for(var i = 0; i <ca.length; i++) {
+  var c = ca[i];
+  while (c.charAt(0) == ' ') {
+  c = c.substring(1);
+  }
+  if (c.indexOf(name) == 0) {
+  return c.substring(name.length, c.length);
+  }
+  }
+  return "";
+  }

@@ -1,85 +1,26 @@
 <!DOCTYPE html>
 <html>
-	<head>
-		<title>QLBH Client</title>
-		<meta charset="utf-8">
-		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
-	</head>
-	<body>
-		<br>
-		<br>
-		<br>
-		<div class="container-fluid">
-				<div class="col-sm-10">
-					<form action="/action_page.php">
-						<div class="row">
-							<div class="col-sm-2">
-								<div>
-									<input type="text" class="form-control" placeholder="Tiếng Việt" aria-label="Recipient's username" aria-describedby="button-addon2" >
-								</div>		
-							</div>
-							<div class="col-sm-2">
-									<div>
-										<input type="text" class="form-control" placeholder="Tiếng Nhật" aria-label="Recipient's username" aria-describedby="button-addon2" >
-									</div>		
-								</div>
-							<div class="input-group-append">
-								<button class="btn btn-outline-secondary" type="submit" id="button-addon2a">Dịch</button>
-							</div>
-						</div>
-					</form>
-				</div>
-				<div class="col-sm-10">
-						<form action="/action_page.php">
-							<div class="row">
-								<div class="col-sm-2">
-									<div>
-										<input type="text" class="form-control" placeholder="日本語" aria-label="Recipient's username" aria-describedby="button-addon2" >
-									</div>		
-								</div>
-								<div class="col-sm-2">
-										<div>
-											<input type="text" class="form-control" placeholder="ベトナム語" aria-label="Recipient's username" aria-describedby="button-addon2" >
-										</div>		
-									</div>
-								<div class="input-group-append">
-									<button class="btn btn-outline-secondary" type="submit" id="button-addon2b">翻訳する</button>
-								</div>
-							</div>
-						</form>
-					</div>
 
-				<div class="col-sm-12 col-md-12">
-					<table class="table table-hover">
-						<thead>
-							<tr>
-								<th>#</th>
-								<th>Name</th>
-								<th>Price</th>
-								<th>Desc</th>
-								<th>Quantity</th>
-							</tr>
-						</thead>
-						<tbody id="products">
-						</tbody>
-					</table>
-				</div>
-			</div>
-		</div>
-		<script id="product-template" type="text/x-handlebars-template">
-			{{#each this}}
-				<tr>
-					<td>{{ProID}}</td>
-					<td>{{ProName}}</td>
-					<td>{{Price}}</td>
-					<td>{{TinyDes}}</td>
-					<td>{{Quantity}}</td>
-				</tr>
-			{{/each}}
-		</script>
-		<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
-		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
-		<script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.12/handlebars.min.js"></script>
-		<script src="index.app.js"></script>
-	</body>
+<head>
+    <title>Long-Polling</title>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+</head>
+
+<body>
+    <div class="col-sm-4"></div>
+    <div class="col-sm-4">
+			<label for="usr">Xin chào</label><label for="usr" name="id"></label>
+        <form action="/vntojp/" method="POST">
+            <div class="form-group"><label for="usr">Tên hành hàng:</label><input class="form-control" id="usr" type="text" name="name" placeholder="Tên khách hàng"></div>
+            <div class="form-group"><label for="usr">Điện thoại:</label><input class="form-control" id="usr" type="text" name="number" placeholder="Số điện thoại"></div>
+            <div class="form-group"><label for="usr">Địa chỉ đón khách:</label><input class="form-control" id="usr" type="text" name="address" placeholder="Địa chỉ đón khách"></div>
+            <div class="form-group"><label for="usr">Ghi chú:</label><input class="form-control" id="usr" type="text" name="note" placeholder="Ghi chú"></div><button class="btn btn-success" type="submit">Đặt chuyến đi</button></form>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.12/handlebars.min.js"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+</body>
+
 </html>

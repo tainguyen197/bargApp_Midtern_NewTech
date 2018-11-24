@@ -2,15 +2,16 @@ var express = require('express'),
     moment = require('moment'),
     low = require('lowdb'),
     fileSync = require('lowdb/adapters/FileSync');
-
+var axios = require('axios');
 var adapter = new fileSync('../../app1/qlbh-backend/db.json');
+const jwt = require('jsonwebtoken');
 //var adapter = new fileSync('./db.json');
 var db = low(adapter);
 
 var router = express.Router();
 
-router.get('/', (req, res) => {
-    var ts = 0;
+router.get('/', verifyToken, (req, res) => {
+    /*var ts = 0;
     if (req.query.ts) {
         ts = +req.query.ts;
     }
@@ -20,8 +21,64 @@ router.get('/', (req, res) => {
     res.json({
         return_ts,
         categories
-    });
+    });*/
+    console.log("456");
+	jwt.verify(req.token, '123456key', (err, authData) => {
+		if(err){
+            console.log("2");
+            console.log(err);
+			res.render('login');
+		}
+		else{
+			console.log("-----------");
+            console.log(authData);
+            authData = authData.thisUser;
+            console.log("6666");
+            console.log(authData);
+			var instance = axios.create({
+                baseURL: 'http://localhost:3000/login',
+				timeout: 15000
+			});
+			instance.post('?id=' + authData.id + '&password=' + authData.password)
+				.then(function (res1) {
+					if (res1.status === 200) {
+                        console.log(".......");
+                        res.render('index');
+                    }
+				}).catch(function (err) {
+                    console.log(err);
+                        res.render('login');
+                })
+		}
+    })
 })
+
+function verifyToken(req, res, next){
+    console.log("4444");
+    console.log(req.headers.cookie);
+    var bearerHeader = req.headers.cookie || req.query.token || req.body.token;
+	if(typeof bearerHeader !== 'undefined'){
+        req.token = getCookie('Bearer', bearerHeader);
+        console.log(req.token);
+    }
+    next();
+}
+
+function getCookie(cname, cookie) {
+    var name = cname + "=";
+    var decodedCookie = decodeURIComponent(cookie);
+    var ca = decodedCookie.split(';');
+    for(var i = 0; i <ca.length; i++) {
+        var c = ca[i];
+        while (c.charAt(0) == ' ') {
+            c = c.substring(1);
+        }
+        if (c.indexOf(name) == 0) {
+            return c.substring(name.length, c.length);
+        }
+    }
+    return "";
+}
 
 router.get('/lp', (req, res) => {
     res.render('map');

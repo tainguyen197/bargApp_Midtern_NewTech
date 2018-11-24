@@ -18,11 +18,8 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cors());
 
-app.get('/', (req, res) => {
-   res.render('login');
-});
 
-app.use('/login/', login);
+app.use('/', login);
 app.use('/api/products/', productCtrl);
 app.use('/vntojp/', vntojp);
 app.use('/jptovn/', jptovn);

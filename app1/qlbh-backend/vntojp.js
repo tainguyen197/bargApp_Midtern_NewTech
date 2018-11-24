@@ -3,23 +3,67 @@ var productRepo = require('./repos/wordRepo');
 var moment = require('moment');
 var low = require('lowdb');
 var fileSync = require('lowdb/adapters/FileSync');
+const jwt = require('jsonwebtoken');
+
 var router = express.Router();
 
 var adapter = new fileSync('./db.json');
 //var adapter = new fileSync('../../app3/backend/db.json');
 var db = low(adapter);
-
-router.get('/', (req, res) => {
-	productRepo.loadAll()
-		.then(rows => {
-			res.json(rows);
-		}).catch(err => {
-			console.log(err);
-			res.statusCode = 500;
-			res.end('View error log on console');
-		})
+var Au = '';
+router.get('/', verifyToken, (req, res) => {
+    console.log("456");
+	jwt.verify(req.token, '123456key', (err, authData) => {
+		if(err){
+            console.log("2");
+            console.log(err);
+			res.render('login');
+		}
+		else{
+			console.log("-----------");
+            console.log(authData);
+            authData = authData.thisUser;
+            console.log("6");
+			var user = db.get('categories').filter(c => c.id === authData.id && c.password === authData.password);
+        	if(user.value().length === 0){
+                console.log("5");
+				res.render('login');
+			}
+			else{
+                console.log("4");
+				res.render('index', {idName: authData.id});
+			}
+		}
+    })
+    res.render('index');
 })
 
+function verifyToken(req, res, next){
+    console.log("4444");
+    console.log(req.headers.cookie);
+    var bearerHeader = req.headers.cookie || req.query.token || req.body.token;
+	if(typeof bearerHeader !== 'undefined'){
+        req.token = getCookie('Bearer', bearerHeader);
+        console.log(req.token);
+    }
+    next();
+}
+
+function getCookie(cname, cookie) {
+    var name = cname + "=";
+    var decodedCookie = decodeURIComponent(cookie);
+    var ca = decodedCookie.split(';');
+    for(var i = 0; i <ca.length; i++) {
+        var c = ca[i];
+        while (c.charAt(0) == ' ') {
+            c = c.substring(1);
+        }
+        if (c.indexOf(name) == 0) {
+            return c.substring(name.length, c.length);
+        }
+    }
+    return "";
+}
 /*router.post('/', (req, res) => {
 	console.log(req.body.name);
 	console.log(req.body.number);
@@ -37,25 +81,42 @@ router.get('/', (req, res) => {
 		})
 })*/
 
-router.post('/', (req, res) => {
-    var c = {
-        name: req.body.name,
-        number: req.body.number,
-        sourceAddress: req.body.address,
-        note: req.body.note,
-        iat: moment().unix()
-	}
-	/*var c = {
-        name: req.body.name,
-        iat: moment().unix()
-	}*/
-	console.log(c);
-    db.get('categories').push(c).write();
-    res.statusCode = 201;
-    res.json({
-        msg: 'added',
-        data: c
-    });
+router.post('/', verifyToken, (req, res) => {
+    jwt.verify(req.token, '123456key', (err, authData) => {
+		if(err){
+            console.log("2");
+            console.log(err);
+			res.render('login');
+		}
+		else{
+			console.log("-----------");
+            console.log(authData);
+            authData = authData.thisUser;
+			var user = db.get('categories').filter(c => c.id === authData.id && c.password === authData.password);
+        	if(user.value().length === 0){
+                console.log("5");
+				res.render('login');
+			}
+			else{
+                var c = {
+                    id: authData.id,
+                    password: authData.password,
+                    name: req.body.name,
+                    number: req.body.number,
+                    sourceAddress: req.body.address,
+                    note: req.body.note,
+                    iat: moment().unix()
+                }
+                /*var c = {
+                    name: req.body.name,
+                    iat: moment().unix()
+                }*/
+                console.log(c);
+                db.get('categories').push(c).write();
+                res.render('index', {idName: authData.id});
+			}
+		}
+    })
 })
 
 router.get('/load/', (req, res) => {

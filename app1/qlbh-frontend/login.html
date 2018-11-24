@@ -22,27 +22,64 @@
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
-    <script type="text/javascript">
+
+   <script type="text/javascript">
+        /*var instance = axios.create({
+                baseURL: 'http://localhost:3000/login/test',
+                headers: {
+                     'Authorization': 'Bearer ' + document.cookie
+                },
+				timeout: 15000
+			});
+			instance.post('')
+				.then(function (res) {
+					if (res.data.test === 0) {             
+                        window.open("http://localhost:3000/","_self");
+                    }
+                    else{
+                        window.open("http://localhost:3000/vntojp","_self");
+                    }
+				}).catch(function (err) {
+                        console.log(err)
+                })
+        }*/
 		function DangNhap(frm){
-            
-            console.log(window.sessionStorage.accessToken);
 			var instance = axios.create({
                 baseURL: 'http://localhost:3000/login',
                 headers: {
-                     'Authorization': 'Bearer ' + window.sessionStorage.accessToken
+                     'Authorization': 'Bearer ' + document.cookie
                 },
 				timeout: 15000
 			});
 			instance.post('?id=' + frm.id.value + '&password=' + frm.password.value)
 				.then(function (res) {
-                
 					if (res.status === 200) {
-						window.sessionStorage.accessToken = res.data.token;
+                        document.cookie = 'app1='+res.data.token;
+                        
+                        console.log( getCookie('app1'));
+                        //console.log(Req;uest.cookie["app11"].value);               
+                        window.open("http://localhost:3000/vntojp/?token=Bearer " + getCookie('app1'),"_self");
                     }
 				}).catch(function (err) {
                         document.getElementById("note").innerHTML = err.response.data
                 })
         }
+
+        function getCookie(cname) {
+            var name = cname + "=";
+            var decodedCookie = decodeURIComponent(document.cookie);
+            var ca = decodedCookie.split(';');
+            for(var i = 0; i <ca.length; i++) {
+            var c = ca[i];
+            while (c.charAt(0) == ' ') {
+                c = c.substring(1);
+            }
+            if (c.indexOf(name) == 0) {
+                return c.substring(name.length, c.length);
+            }
+    }
+    return "";
+}
 	</script>
 </body>
 
