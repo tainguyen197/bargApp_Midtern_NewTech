@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Map, Marker, GoogleApiWrapper } from 'google-maps-react';
+import LoginComponent from './LoginController';
 // import logo from './logo.svg';
 import './App.css';
 // import { promises } from 'fs';
@@ -8,16 +9,35 @@ import './App.css';
 class App extends Component {
   constructor(props) {
     super(props);
+    this.dataLogin = this.dataLogin.bind(this);
     this.loadNewLocation = this.loadNewLocation.bind(this);
     this.fetchPlaces = this.fetchPlaces.bind(this);
     this.createMarkerforNewLocation = this.createMarkerforNewLocation.bind(this);
     this.placeMarker = this.placeMarker.bind(this);
     this.updateLocation = this.updateLocation.bind(this);
-
+    this.getLoginComponent = this.getLoginComponent.bind(this);
+    this.state = {
+      showModalLogin: true,
+      showMap: false
+    }
+  }
+  dataLogin(data) {
+    this.setState({
+      showModalLogin: false
+    });
+    this.setState({
+      showMap: true
+    });
   }
 
+  getLoginComponent() {
+    if (!this.state.showModalLogin) {
+      return <LoginComponent />;
+    }
+    return null;
+  }
   //Hiển thị marker tại location
-  placeMarker(location, map,element) {
+  placeMarker(location, map, element) {
     var marker = new window.google.maps.Marker({
       position: location,
       map: map,
@@ -43,7 +63,7 @@ class App extends Component {
           //lấy location(lag,lng)  dựa trên address
           var address = data.results[0].formatted_address;
           //console.log(address);
-          var json = {SDT: element.SDT, DiaChi: address};
+          var json = { SDT: element.SDT, DiaChi: address };
           console.log(json);
           fetch('http://localhost:3000/categories/update', {
             method: 'POST',
@@ -52,16 +72,16 @@ class App extends Component {
             headers: {
               "Content-Type": "application/json; charset=utf-8",
               "Access-Control-Allow-Origin": "null"
-          },
+            },
           }).then(function (response) {
             console.log(response);
             return response.json();
-          }).catch(function (err){
+          }).catch(function (err) {
             console.log(err);
           }).
-          then(function (data) {
-            console.log(data);
-          });
+            then(function (data) {
+              console.log(data);
+            });
         })
     });
   }
@@ -177,15 +197,22 @@ class App extends Component {
     return (
       <div className="App">
         <Map google={this.props.google}
-          className={'map'}
-          initialCenter={userLocation}
-          zoom={13}
-          onGoogleApiLoaded={({ map, maps }) => this.renderMarkers(map, maps)}
-          onClick={this.mapClicked}
-          onReady={this.fetchPlaces}
-          onDragend={this.centerMoved}
+          zoom={2}
         >
+          {this.state.showModalLogin && <LoginComponent sendData={this.dataLogin} />}
         </Map>
+        {this.state.showMap &&
+          <Map google={this.props.google}
+            className={'map'}
+            initialCenter={userLocation}
+            zoom={13}
+            onGoogleApiLoaded={({ map, maps }) => this.renderMarkers(map, maps)}
+            onClick={this.mapClicked}
+            onReady={this.fetchPlaces}
+            onDragend={this.centerMoved}
+          >
+          </Map>
+        }
       </div>
     );
   }

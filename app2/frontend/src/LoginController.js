@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-
+import { Button,Alert } from 'react-bootstrap';
+import { isBuffer } from 'util';
 
 class LoginController extends Component {
     constructor(props) {
@@ -28,7 +29,7 @@ class LoginController extends Component {
     }
 
     checkLogin() {
-        var host = 'http://localhost:3000/driver/login?';
+        var host = 'http://localhost:3000/identifier/login?';
         var username = this.state.username;
         var password = this.state.password;
 
@@ -53,7 +54,7 @@ class LoginController extends Component {
                     this.props.sendData(data.driver);  
                 }
             }).catch(err => {
-                //window.alert(err);
+                window.alert('Sai tên đăng nhập hoặc mật khẩu');
             })
 
     }
@@ -81,7 +82,9 @@ class LoginController extends Component {
                 </form>
                 <div className="col-sm-offset-5 col-sm-1" style={{ paddingTop: '30px' }}>
                     <button className="btn btn-default" onClick={this.checkLogin}>Đăng nhập</button>
+                   
                 </div>
+                
             </div>
         );
     }
