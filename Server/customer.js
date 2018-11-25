@@ -8,6 +8,34 @@ var moment = require('moment');
 //var adapter = new fileSync('../../app3/backend/db.json');
 var db = low(adapter);
 
+
+
+router.get('/loadnewcustomer', (req, res) => {
+    var ts = 'Wait';
+    var loop = 0;
+    var fn = () => {
+        var categories = db.get('categories').filter(c => c.TrangThai === ts & c.Skip === 0);
+        if (categories.size() > 0) {
+            console.log('catelories > 0');
+            res.json({
+                categories
+            });
+        } else {
+            loop++;
+            console.log('catelories <= 0');
+            console.log(`loop: ${loop}`);
+            if (loop < 4) {
+                setTimeout(fn, 2500);
+            } else {
+                res.statusCode = 204;
+                res.end('no data');
+            }
+        }
+    }
+    fn();
+})
+
+
 router.post('/add', verifyToken, (req, res) => {
     console.log("3");
 	jwt.verify(req.token, '123456key', (err, authData) => {
@@ -35,14 +63,15 @@ router.post('/add', verifyToken, (req, res) => {
                     SDT: req.query.SDT,
                     DiaChi: req.query.DiaChi,
                     GhiChu: req.query.GhiChu,
-                    TrangThai: 'Vừa đặt xong',
+                    TrangThai: 'Wait',
                     Skip: 0,
                     iat: moment().unix()
                 }
                 console.log(c);
                 db.get('categories').push(c).write();
                 res.json({
-                    status: 'ok'
+                    status: 'ok',
+                    data: c
                 })
 			}
 		}
@@ -77,7 +106,8 @@ function getCookie(cname, cookie) {
     return "";
 }
 
-router.get('/load/', (req, res) => {
+
+router.get('/load', (req, res) => {
     var ts = 0;
     if (req.query.ts) {
         ts = +req.query.ts;
@@ -88,7 +118,6 @@ router.get('/load/', (req, res) => {
         var categories = db.get('categories').filter(c => c.iat >= ts);//k 
         var return_ts = moment().unix();
         if (categories.size() > 0) {
-            console.log(categories.value());
             console.log('co moi');
             res.json({
                 return_ts,

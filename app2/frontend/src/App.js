@@ -109,7 +109,7 @@ class App extends Component {
   }
 
   loadNewLocation(ts, flag, map) {
-    fetch('http://localhost:3000/categories/lp?ts=' + ts)
+    fetch('http://localhost:3000/customer/load?ts=' + ts)
       .then(results => {
         if (results.status === 200) {
           flag = 1;
