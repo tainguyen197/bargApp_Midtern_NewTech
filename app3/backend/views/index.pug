@@ -5,9 +5,6 @@ head
   link(rel='stylesheet' href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css' integrity='sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u' crossorigin='anonymous')
 .container-fluid
   .col-sm-12.col-md-12
-  label(for='usr') Xin ch&agrave;o: 
-  span#result11=' '
-  span#result11=idNameName
     table#tableId.table.table-hover
       thead
         tr
@@ -25,7 +22,7 @@ script#template(type='text/x-handlebars-template').
   <tr>
   <td>{{ID}}</td>
   <td>{{iat}}</td>
-  <td>{{HoTen}}</td>
+  <td>{{Hoten}}</td>
   <td>{{SDT}}</td>
   <td>{{DiaChi}}</td>
   <td>{{desAddress}}</td>
@@ -48,16 +45,16 @@ script(type='text/javascript').
   console.log("1");
   }
   var loadCategories = function () {
+  console.log("2");
   var instance = axios.create({
   baseURL: 'http://localhost:3000/customer/load',
   timeout: 15000
   });
   instance.get('?ts=' + ts)
   .then(function (res) {
-    console.log("1");
+  console.log("2");
   if (res.status === 200) {
-      console.log("2");
-  console.log(res.data);
+  console.log("4");
   ts = res.data.return_ts;
   var source = document.getElementById('template').innerHTML;
   var template = Handlebars.compile(source);
@@ -68,10 +65,7 @@ script(type='text/javascript').
   for (i = 0; i < rows.length; i++) {
   row = table.rows[i];
   row.onclick = function(){
-  /*var cell = this.getElementsByTagName("td")[0];
-  var id = cell.innerHTML;
-  alert("id:" + id);*/
-  var url = 'http://localhost:3001/app3/lp';
+  var url = 'http://localhost:3003/app3/lp?location='+row.getElementsByTagName("TD")[4].textContent;
   var win = window.open(url, '_blank');
   win.focus();
   };
@@ -79,9 +73,6 @@ script(type='text/javascript').
   var switching, i, x, y, shouldSwitch;
   //table = document.getElementById("tableId");
   switching = true;
-  console.log(table);
-  /*Make a loop that will continue until
-  no switching has been done:*/
   for(i=1;i<(rows.length - 1);i++){
   for(j=i+1;j<rows.length;j++){
   x = rows[i].getElementsByTagName("TD")[1].textContent;
@@ -94,6 +85,7 @@ script(type='text/javascript').
   }
   }
   }).catch(function (err) {
+  console.log("3");
   console.log(err);
   }).then(function () {
   loadCategories();
