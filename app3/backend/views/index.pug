@@ -19,7 +19,7 @@ script#template(type='text/x-handlebars-template').
   {{#each this}}
   <tr>
   <td>{{iat}}</td>
-  <td>{{HoTen}}</td>
+  <td>{{Hoten}}</td>
   <td>{{SDT}}</td>
   <td>{{DiaChi}}</td>
   <td>{{TrangThai}}</td>
@@ -48,9 +48,9 @@ script(type='text/javascript').
   });
   instance.get('?ts=' + ts)
   .then(function (res) {
+  console.log("2");
   if (res.status === 200) {
-  if(oldTime !== ts){
-  oldTime = ts
+  console.log("4");
   ts = res.data.return_ts;
   var source = document.getElementById('template').innerHTML;
   var template = Handlebars.compile(source);
@@ -70,7 +70,7 @@ script(type='text/javascript').
   for (i = 0; i < rows.length; i++) {
   row = table.rows[i];
   row.onclick = function(){
-  var url = 'http://localhost:3003/app3/lp';
+  var url = 'http://localhost:3003/app3/lp?location='+row.getElementsByTagName("TD")[4].textContent;
   var win = window.open(url, '_blank');
   win.focus();
   };
@@ -90,6 +90,7 @@ script(type='text/javascript').
   }
   }
   }).catch(function (err) {
+  console.log("3");
   console.log(err);
   }).then(function () {
   setTimeout(loadCategories,3000);

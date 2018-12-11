@@ -181,7 +181,7 @@ router.post('/', verifyToken, (req, res) => {
     })
 })
 
-router.get('/load/', (req, res) => {
+router.get('/load', (req, res) => {
     var ts = 0;
     if (req.query.ts) {
         ts = +req.query.ts;

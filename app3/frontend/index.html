@@ -109,9 +109,9 @@
 						//rows[1].getElementsByTagName("TD")[0].parentNode.removeChild(rows[1]);
 						
     					for (i = 0; i < rows.length; i++) {
-        					row = table.rows[i];
+							row = table.rows[i];
         					row.onclick = function(){
-								var url = 'http://localhost:3003/app3/lp';
+								var url = 'http://localhost:3003/app3/lp?location='+row.getElementsByTagName("TD")[4].textContent;
 								var win = window.open(url, '_blank');
 								win.focus();
 							};
