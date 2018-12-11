@@ -54,7 +54,7 @@ class LoginController extends Component {
                     this.props.sendData(data.driver);  
                 }
             }).catch(err => {
-                window.alert('Sai tên đăng nhập hoặc mật khẩu');
+             
             })
 
     }

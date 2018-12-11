@@ -19,7 +19,7 @@ var return_ts = 0;
 var _json = null;
 function loadNewCustomer() {
   console.log('loadNewCustomer');
-  fetch('http://localhost:3000/categories/customer')
+  fetch('http://localhost:3000/customer/loadnewcustomer')
     .then(res => {
       return res.json();
     })

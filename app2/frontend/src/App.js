@@ -65,7 +65,7 @@ class App extends Component {
           //console.log(address);
           var json = { SDT: element.SDT, DiaChi: address };
           console.log(json);
-          fetch('http://localhost:3000/categories/update', {
+          fetch('http://localhost:3000/customer/updateAdress', {
             method: 'POST',
             mode: 'cors',
             body: JSON.stringify(json),
@@ -109,7 +109,7 @@ class App extends Component {
   }
 
   loadNewLocation(ts, flag, map) {
-    fetch('http://localhost:3000/customer/load?ts=' + ts)
+    fetch('http://localhost:3000/customer/loadts1?ts=' + ts)
       .then(results => {
         if (results.status === 200) {
           flag = 1;

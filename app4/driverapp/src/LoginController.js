@@ -7,12 +7,22 @@ class LoginController extends Component {
         this.checkLogin = this.checkLogin.bind(this);
         this.updateUsernameValue = this.updateUsernameValue.bind(this);
         this.updatePassValue = this.updatePassValue.bind(this);
+        this.handleDismiss = this.handleDismiss.bind(this);
+        this.handleShow = this.handleShow.bind(this);
         this.state = {
             isShow: true,
             username: '',
-            password: ''
+            password: '',
+            show: true
         };
 
+    }
+    handleDismiss() {
+        this.setState({ show: false });
+    }
+
+    handleShow() {
+        this.setState({ show: true });
     }
 
     updatePassValue(evt) {
@@ -33,24 +43,24 @@ class LoginController extends Component {
         var password = this.state.password;
 
         var req = host + 'username=' + username + '&password=' + password;
-        console.log(req);   
+        console.log(req);
         fetch(req)
             .then(result => {
                 return result.json();
             }).then(data => {
                 console.log(data);
-                if (data.state === 'OK'){
+                if (data.state === 'OK') {
                     this.setState({
                         isShow: false
                     });
                 }
-                else{
-                   
+                else {
+
                 }
                 return data;
             }).then(data => {
-                if (!this.state.isShow){
-                    this.props.sendData(data.driver);  
+                if (!this.state.isShow) {
+                    this.props.sendData(data.driver);
                 }
             }).catch(err => {
                 //window.alert(err);
@@ -82,6 +92,7 @@ class LoginController extends Component {
                 <div className="col-sm-offset-5 col-sm-1" style={{ paddingTop: '30px' }}>
                     <button className="btn btn-default" onClick={this.checkLogin}>Đăng nhập</button>
                 </div>
+            
             </div>
         );
     }

@@ -11,6 +11,7 @@ class App extends Component {
     super(props);
     const me = this;
     this.updateStatusCustomer = this.updateStatusCustomer.bind(this);
+    this.updateStatuMovingCustomer = this.updateStatuMovingCustomer.bind(this);
     this.updateStatusDriver = this.updateStatusDriver.bind(this);
     this.onReadyMap = this.onReadyMap.bind(this);
     this.onMarkerDragEnd = this.onMarkerDragEnd.bind(this);
@@ -19,21 +20,27 @@ class App extends Component {
     this.dataLogin = this.dataLogin.bind(this);
     this.CancelReq = this.CancelReq.bind(this);
     this.hideShowPickup = this.hideShowPickup.bind(this);
+
+    this.hideShowEndTrip = this.hideShowEndTrip.bind(this);
+
     this.mapClicked = this.mapClicked.bind(this);
     this.setStateChange = this.setStateChange.bind(this);
     this.switchStandy = this.switchStandy.bind(this);
     this.test = this.test.bind(this);
+    this.updateSkipStatus = this.updateSkipStatus.bind(this);
     this.state = {
       userLocation: { lat: 32, lng: 32 },
       loading: true,
       show: false,
       time: 10,
       map: null,
+      isSkip: true,
       driverInfo: null,
       customerInfo: null,
       showModalLogin: true,
       showMap: false,
       showCantPickup: false,
+      showEndTrip: false,
       status: 0,
       State: null,
       showChangeState: false,
@@ -82,7 +89,7 @@ class App extends Component {
   }
 
   mapClicked(event) {
-     this.setState({showChangeState: true});
+    this.setState({ showChangeState: true });
   }
 
   handleHide() {
@@ -92,6 +99,10 @@ class App extends Component {
 
   hideShowPickup() {
     this.setState({ showCantPickup: false });
+  }
+
+  hideShowEndTrip() {
+    this.setState({ showEndTrip: false });
   }
 
   CancelReq() {
@@ -110,7 +121,7 @@ class App extends Component {
       driverInfo: data
     });
     this.setState({
-      State: 'STANDY'
+      State: 'STANDBY'
     });
 
     console.log(this.state.showChangeState);
@@ -130,15 +141,15 @@ class App extends Component {
     this.setState({ map: map });
     this.state.map.addListener('rightclick', function (e) {
       //this.test();
-     });
+    });
 
 
   }
 
-  test(){
+  test() {
     console.log('AAAAAA');
-    this.setState({showChangeState: true});
-    
+    this.setState({ showChangeState: true });
+
   }
   getLoginComponent() {
     if (!this.state.showModalLogin) {
@@ -169,8 +180,9 @@ class App extends Component {
   }
 
   updateStatusCustomer() {
+    console.log("uopdateStatusCustomer");
     console.log(this.state.customerInfo.categories[0]);
-    fetch('http://localhost:3000/categories/updateStatus', {
+    fetch('http://localhost:3000/customer/updateStatus', {
       method: 'POST',
       mode: 'cors',
       body: JSON.stringify(this.state.customerInfo.categories[0]),
@@ -184,19 +196,41 @@ class App extends Component {
       })
   }
 
-  switchStandy(){
+  updateStatuMovingCustomer() {
+    console.log("updateStatuMovingCustomer");
+    console.log(this.state.customerInfo.categories[0]);
+    fetch('http://localhost:3000/customer/updateMovingStatus', {
+      method: 'POST',
+      mode: 'cors',
+      body: JSON.stringify(this.state.customerInfo.categories[0]),
+      headers: {
+        "Content-Type": "application/json; charset=utf-8",
+        "Access-Control-Allow-Origin": "null"
+      },
+    })
+      .catch(function (err) {
+        console.log(err);
+      })
+  }
+  switchStandy() {
+    console.log(this.state.State);
     if (this.state.State === 'READY') {
       this.setState({ State: 'STANDBY' });
-      this.updateStatusDriver('busy');
+      this.updateStatusDriver('ready');
+      console.log('busy -> ready');
     }
     else {
       this.setState({ State: 'READY' });
-      this.updateStatusDriver('ready');
+      this.updateStatusDriver('busy');
+      console.log('ready -> bussy');
+
+
     }
     this.setStateChange();
   }
 
   updateStatusDriver(state) {
+    console.log("updateStatusDriver");
     var data = this.state.driverInfo;
     data[0].TrangThai = state;
 
@@ -258,9 +292,9 @@ class App extends Component {
       }).then(data => {
         console.log(data.rows[0].elements[0].distance.value);
         var distance = data.rows[0].elements[0].distance.value
-        this.showNewReq();
-        if (distance > 1000 && _this.state.status === 0) {
-          if (window.confirm('Vị trí không được quá 100m, vui lòng cập nhật lại vị trí!')) this.onCancel();
+        if (distance > 1000) {
+          this.setState({ showEndTrip: true });
+          this.updateStatusCustomer();
         }
         else if (_this.state.status === 1) {
           this.setState({
@@ -281,7 +315,7 @@ class App extends Component {
     this.setState({ show: false });
     this.setState({ status: 1 });
 
-    var host = 'http://localhost:3000/categories/getCusInfo?';
+    var host = 'http://localhost:3000/customer/getCusInfo?';
     var SDT = this.state.data.SDT;
     var req = host + 'SDT=' + SDT;
     console.log(req);
@@ -289,15 +323,18 @@ class App extends Component {
       .then(result => {
         return result.json();
       }).then(data => {
-        if (data.cusInfo[0].TrangThai === 'Done') {
+        if (data.cusInfo[0].TrangThai === 'Moving') {
           this.setState({
             showCantPickup: true
           });
         }
         else {
           // //Update trạng thái => busy
+          this.setState({
+            isSkip: false
+          })
           this.updateStatusDriver('busy');
-          this.updateStatusCustomer();
+          this.updateStatuMovingCustomer();
           //Lấy vị trí thông qua địa chỉ 
           var template = 'https://maps.googleapis.com/maps/api/geocode/json?address=';
           var key = '&key=AIzaSyAoBGukMgWP82wOqAaDqkXeslb9V4jXH28'
@@ -341,8 +378,51 @@ class App extends Component {
 
   }
 
+  updateSkipStatus() {
+    //KIểm tra trạng thái là Done?
+    var host = 'http://localhost:3000/customer/getCusInfo?';
+    var SDT = this.state.data.SDT;
+    var req = host + 'SDT=' + SDT;
+    console.log(req);
+    fetch(req)
+      .then(result => {
+        return result.json();
+      }).then(data => {
+        if (data.cusInfo[0].TrangThai === 'Done') {
+          return;
+        }
+        console.log("AAAAAAAAAAAA");
+        fetch('http://localhost:3000/customer/updateSkipStatus', {
+          method: 'POST',
+          mode: 'cors',
+          body: JSON.stringify(this.state.customerInfo.categories[0]),
+          headers: {
+            "Content-Type": "application/json; charset=utf-8",
+            "Access-Control-Allow-Origin": "null"
+          },
+        })
+          .catch(function (err) {
+            console.log(err);
+          })
+      })
+  }
+
   currentTime(interval, val) {
     if (val <= 0) {
+      //updateSkipStatus
+      var host = 'http://localhost:3000/customer/getCusInfo?';
+      var SDT = this.state.data.SDT;
+      var req = host + 'SDT=' + SDT;
+      console.log(req);
+      fetch(req)
+        .then(result => {
+          return result.json();
+        }).then(data => {
+          if (data.cusInfo[0].TrangThai === 'Wait') {
+            this.updateSkipStatus();
+          }
+        })
+
       clearInterval(interval);
       this.setState({ show: false });
       this.setState({
@@ -462,6 +542,26 @@ class App extends Component {
           </Modal.Body>
           <Modal.Footer>
             <Button onClick={this.hideShowPickup}>Xác nhận</Button>
+          </Modal.Footer>
+        </Modal>
+
+
+        <Modal
+          show={this.state.showEndTrip}
+          onHide={this.hideShowEndTrip}
+          container={this}
+          aria-labelledby="contained-modal-title"
+        >
+          <Modal.Header closeButton>
+            <Modal.Title id="contained-modal-title">
+              Thông báo
+            </Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            Chuyến đi của bạn đã kết thúc
+          </Modal.Body>
+          <Modal.Footer>
+            <Button onClick={this.hideShowEndTrip}>Xác nhận</Button>
           </Modal.Footer>
         </Modal>
 
