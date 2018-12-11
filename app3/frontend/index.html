@@ -14,12 +14,10 @@
 			<table id = "tableId" class="table table-hover">
 				<thead>
 					<tr>
-						<th>Mã đặt xe</th>
 						<th name="iat">Thời gian</th>
 						<th>Tên khách hàng</th>
 						<th>Điện thoại</th>
 						<th>Địa chỉ đón khách</th>
-						<th>Địa chỉ trả khách khách</th>
 						<th>Tình trạng</th>
 						<th>Ghi chú</th>
 					</tr>
@@ -32,12 +30,10 @@
 	<script id="template" type="text/x-handlebars-template">
 		{{#each this}}
 			<tr>
-				<td>{{ID}}</td>
 				<td>{{iat}}</td>
-				<td>{{Hoten}}</td>
+				<td>{{HoTen}}</td>
 				<td>{{SDT}}</td>
 				<td>{{DiaChi}}</td>
-				<td>{{desAddress}}</td>
 				<td>{{TrangThai}}</td>
 				<td>{{GhiChu}}</td>
 			</tr>
@@ -56,13 +52,18 @@
 	
 	<script type="text/javascript">
 		ts = 0;
-
+		var oldTime = -1;
 		window.onload = function () {
+			
 			loadCategories();
 			console.log("1");
 		}
 
 		var loadCategories = function () {
+
+
+    					
+
 			console.log("2");
 			var instance = axios.create({
 				baseURL: 'http://localhost:3000/customer/load',
@@ -73,6 +74,8 @@
 				.then(function (res) {
 					console.log("2");
 					if (res.status === 200) {
+						if(oldTime !== ts){
+							oldTime = ts
 						console.log("4");
 						ts = res.data.return_ts;
 						var source = document.getElementById('template').innerHTML;
@@ -80,7 +83,31 @@
 						var html = template(res.data.categories);
 						document.getElementById('list').innerHTML += html;
 						var table = document.getElementById("tableId");
-    					var rows = table.getElementsByTagName("tr");	
+						var rows = table.getElementsByTagName("tr");
+						/*for(i=1;i<(rows.length - 1);i++){
+  							for(j=i+1;j<rows.length;j++){
+  								if(rows[i].getElementsByTagName("TD")[2] === rows[j].getElementsByTagName("TD")[2]){
+    								rows[j].getElementsByTagName("TD")[0].parentNode.removeChild("TD");
+  								}
+							}
+						}*/
+						/*console.log(rows.length);
+						  for(var k = 1; k< rows.length;k++){
+							  var x = rows[k].getElementsByTagName("TD")[2].textContent;
+							console.log(x);
+						  rows[k].parentNode.removeChild(rows[k]);
+						  }*/
+						  for(k = 1;k< rows.length;k++){
+							  for(l = k + 1;l<rows.length;l++){
+								  if(rows[k].getElementsByTagName("TD")[2].textContent===rows[l].getElementsByTagName("TD")[2].textContent){
+									rows[k].parentNode.removeChild(rows[k]);
+									l--;
+								  }
+							  }
+						  }
+						
+						//rows[1].getElementsByTagName("TD")[0].parentNode.removeChild(rows[1]);
+						
     					for (i = 0; i < rows.length; i++) {
         					row = table.rows[i];
         					row.onclick = function(){
@@ -94,8 +121,8 @@
 						switching = true;
 						for(i=1;i<(rows.length - 1);i++){
 							for(j=i+1;j<rows.length;j++){
-								x = rows[i].getElementsByTagName("TD")[1].textContent;
-								y = rows[j].getElementsByTagName("TD")[1].textContent;
+								x = rows[i].getElementsByTagName("TD")[0].textContent;
+								y = rows[j].getElementsByTagName("TD")[0].textContent;
 								if(parseInt(x) < parseInt(y)){
 									console.log("xxxx");
 									rows[i].parentNode.insertBefore(rows[j], rows[i]);
@@ -103,7 +130,7 @@
 							}
 						}
 
-						
+					}
 					}
 				}).catch(function (err) {
 					console.log("3");

@@ -1,34 +1,27 @@
 doctype html
 head
-  title Long-Polling
+  title App3
   meta(charset='utf-8')
   link(rel='stylesheet' href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css' integrity='sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u' crossorigin='anonymous')
 .container-fluid
   .col-sm-12.col-md-12
-  label(for='usr') Xin ch&agrave;o: 
-  span#result11=' '
-  span#result11=idNameName
     table#tableId.table.table-hover
       thead
         tr
-          th M&atilde; &dstrok;&#x1EB7;t xe
           th(name='iat') Th&#x1EDD;i gian
           th T&ecirc;n kh&aacute;ch h&agrave;ng
           th &Dstrok;i&#x1EC7;n tho&#x1EA1;i
           th &Dstrok;&#x1ECB;a ch&#x1EC9; &dstrok;&oacute;n kh&aacute;ch
-          th &Dstrok;&#x1ECB;a ch&#x1EC9; tr&#x1EA3; kh&aacute;ch kh&aacute;ch
           th T&igrave;nh tr&#x1EA1;ng
           th Ghi ch&uacute;
       tbody#list
 script#template(type='text/x-handlebars-template').
   {{#each this}}
   <tr>
-  <td>{{ID}}</td>
   <td>{{iat}}</td>
   <td>{{HoTen}}</td>
   <td>{{SDT}}</td>
   <td>{{DiaChi}}</td>
-  <td>{{desAddress}}</td>
   <td>{{TrangThai}}</td>
   <td>{{GhiChu}}</td>
   </tr>
@@ -43,21 +36,21 @@ script(src='https://code.jquery.com/jquery-3.3.1.min.js')
 script(src='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js' integrity='sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa' crossorigin='anonymous')
 script(type='text/javascript').
   ts = 0;
+  var oldTime = -1;
   window.onload = function () {
   loadCategories();
-  console.log("1");
   }
   var loadCategories = function () {
+  console.log("2");
   var instance = axios.create({
   baseURL: 'http://localhost:3000/customer/load',
   timeout: 15000
   });
   instance.get('?ts=' + ts)
   .then(function (res) {
-    console.log("1");
   if (res.status === 200) {
-      console.log("2");
-  console.log(res.data);
+  if(oldTime !== ts){
+  oldTime = ts
   ts = res.data.return_ts;
   var source = document.getElementById('template').innerHTML;
   var template = Handlebars.compile(source);
@@ -65,13 +58,19 @@ script(type='text/javascript').
   document.getElementById('list').innerHTML += html;
   var table = document.getElementById("tableId");
   var rows = table.getElementsByTagName("tr");
+
+  for(k = 1;k< rows.length;k++){
+  for(l = k + 1;l<rows.length;l++){
+  if(rows[k].getElementsByTagName("TD")[2].textContent===rows[l].getElementsByTagName("TD")[2].textContent){
+  rows[k].parentNode.removeChild(rows[k]);
+  l--;
+  }
+  }
+  }
   for (i = 0; i < rows.length; i++) {
   row = table.rows[i];
   row.onclick = function(){
-  /*var cell = this.getElementsByTagName("td")[0];
-  var id = cell.innerHTML;
-  alert("id:" + id);*/
-  var url = 'http://localhost:3001/app3/lp';
+  var url = 'http://localhost:3003/app3/lp';
   var win = window.open(url, '_blank');
   win.focus();
   };
@@ -79,16 +78,13 @@ script(type='text/javascript').
   var switching, i, x, y, shouldSwitch;
   //table = document.getElementById("tableId");
   switching = true;
-  console.log(table);
-  /*Make a loop that will continue until
-  no switching has been done:*/
   for(i=1;i<(rows.length - 1);i++){
   for(j=i+1;j<rows.length;j++){
-  x = rows[i].getElementsByTagName("TD")[1].textContent;
-  y = rows[j].getElementsByTagName("TD")[1].textContent;
+  x = rows[i].getElementsByTagName("TD")[0].textContent;
+  y = rows[j].getElementsByTagName("TD")[0].textContent;
   if(parseInt(x) < parseInt(y)){
-  console.log("xxxx");
   rows[i].parentNode.insertBefore(rows[j], rows[i]);
+  }
   }
   }
   }
@@ -96,7 +92,7 @@ script(type='text/javascript').
   }).catch(function (err) {
   console.log(err);
   }).then(function () {
-  loadCategories();
+  setTimeout(loadCategories,3000);
   })
   }
 script.

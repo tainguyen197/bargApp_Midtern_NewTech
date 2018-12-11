@@ -1,103 +1,34 @@
 {
   "categories": [
     {
-      "HoTen": "Nguyen Van A",
-      "SDT": "012427147",
-      "DiaChi": "543/49 Nguyễn Đình Chiểu, Phường 2, Quận 3, Hồ Chí Minh, Vietnam",
-      "GhiChu": "Nhanh dum cai",
-      "TrangThai": "Done",
+      "HoTen": "Nguyen Van B",
+      "SDT": "27273214",
+      "DiaChi": "150 Nguyen Van Cu quan 5 ho chi minh",
+      "GhiChu": "",
+      "TrangThai": "Moving",
       "Skip": 0,
-      "iat": 1538978440
+      "iat": 1544455255,
+      "iat2": 1544455227
     },
     {
       "HoTen": "Nguyen Van C",
-      "SDT": "422834782323",
-      "DiaChi": "296Bis Đường Lê Văn Sỹ, Phường 14, Quận 3, Hồ Chí Minh, Vietnam",
-      "GhiChu": "Lau du",
-      "TrangThai": "Done",
-      "Skip": 0,
-      "iat": 1538978440
-    },
-    {
-      "HoTen": "Nguyen Van D",
-      "SDT": "234723642378",
-      "DiaChi": "612/1 đường Bến Phú Lâm, Phường 9, Quận 6, Hồ Chí Minh, Vietnam",
+      "SDT": "0968853631",
+      "DiaChi": "227 Nguyen Van Cu quan 5 ho chi minh",
       "GhiChu": "",
-      "TrangThai": "Done",
+      "TrangThai": "Moving",
       "Skip": 0,
-      "iat": 1538978440
+      "iat": 1544455271,
+      "iat2": 1544455233
     },
     {
-      "HoTen": "Nguyen Van E",
-      "SDT": "837983534",
-      "DiaChi": "11 Vĩnh Hội, Phường 3, Quận 4, Hồ Chí Minh, Vietnam",
-      "GhiChu": "Humzz",
-      "TrangThai": "Done",
+      "HoTen": "Nguyen Van A",
+      "SDT": "01674229190",
+      "DiaChi": "202 Đường 3 Tháng 2, Phường 14, Quận 10, Hồ Chí Minh, Vietnam",
+      "GhiChu": "khong co gi",
+      "TrangThai": "Moving",
       "Skip": 0,
-      "iat": 1538978440
-    },
-    {
-      "HoTen": "Nguyen Van D",
-      "SDT": "234723642376",
-      "DiaChi": "91 Hoà Hưng, Phường 12, Quận 10, Hồ Chí Minh, Vietnam",
-      "GhiChu": "",
-      "TrangThai": "Done",
-      "Skip": 0,
-      "iat": 1541757243
-    },
-    {
-      "HoTen": "Nguyen Van E",
-      "SDT": "8379835343432423",
-      "DiaChi": "11 Vĩnh Hội, Phường 3, Quận 4, Hồ Chí Minh, Vietnam",
-      "GhiChu": "Humzz",
-      "TrangThai": "Done",
-      "Skip": 0,
-      "iat": 1543043504
-    },
-    {
-      "HoTen": "Mai Hïu Tu¥n",
-      "SDT": "0909155824",
-      "DiaChi": "59/23/39",
-      "GhiChu": "Không",
-      "TrangThai": "Vừa đặt xong",
-      "Skip": 0,
-      "iat": 1543089544
-    },
-    {
-      "HoTen": "G",
-      "SDT": "1",
-      "DiaChi": "2",
-      "GhiChu": "3",
-      "TrangThai": "Vừa đặt xong",
-      "Skip": 0,
-      "iat": 1543089758
-    },
-    {
-      "HoTen": "1",
-      "SDT": "2",
-      "DiaChi": "3",
-      "GhiChu": "4",
-      "TrangThai": "Vừa đặt xong",
-      "Skip": 0,
-      "iat": 1543089816
-    },
-    {
-      "HoTen": "3",
-      "SDT": "2",
-      "DiaChi": "1",
-      "GhiChu": "0",
-      "TrangThai": "Vừa đặt xong",
-      "Skip": 0,
-      "iat": 1543091364
-    },
-    {
-      "HoTen": "1111",
-      "SDT": "1111",
-      "DiaChi": "1111",
-      "GhiChu": "111",
-      "TrangThai": "Vừa đặt xong",
-      "Skip": 0,
-      "iat": 1543097068
+      "iat": 1544456378,
+      "iat2": 1544455238
     }
   ],
   "identifier": [
@@ -125,7 +56,7 @@
       "HoTen": "Nguyen Van B",
       "UserName": "tainguyen1997",
       "Password": "tainguyen1997",
-      "TrangThai": "ready"
+      "TrangThai": "busy"
     },
     {
       "HoTen": "Nguyen Van C",
